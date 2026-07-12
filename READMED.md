@@ -25,7 +25,6 @@ This project demonstrates modern test automation practices:
 - Docker execution
 - Cloud execution
 
-
 ## Application Under Test
 
 This framework uses:
@@ -43,6 +42,15 @@ https://www.saucedemo.com/
 | JUnit 5    | Test execution |
 | Cucumber   | BDD |
 | Allure     | Reporting |
+
+
+## Documentation
+
+- [IntelliJ Setup](docs/setup-intellij.md)
+- [Architecture](docs/architecture.md)
+- [Running Tests](docs/running-tests.md)
+- [Browser Lifecycle](docs/browser-lifecycle.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
 
 ## Getting Started
