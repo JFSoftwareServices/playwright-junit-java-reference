@@ -51,6 +51,7 @@ https://www.saucedemo.com/
 - [Running Tests](docs/running-tests.md)
 - [Browser Lifecycle](docs/browser-lifecycle.md)
 - [Troubleshooting](docs/troubleshooting.md)
+- [Parallel Execution](docs/parallel-execution.md)
 
 
 ## Getting Started

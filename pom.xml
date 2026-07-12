@@ -64,6 +64,20 @@
 
                 <version>3.5.2</version>
 
+
+                <configuration>
+
+                    <properties>
+
+                        <configurationParameters>
+                            junit.jupiter.execution.parallel.enabled=true
+                        </configurationParameters>
+
+                    </properties>
+
+
+                </configuration>
+
             </plugin>
 
 
