@@ -1,7 +1,6 @@
 package com.jfsoftwareservices.tests;
 
-import com.jfsoftwareservices.framework.config.FrameworkConfig;
-import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
+import com.jfsoftwareservices.framework.pages.LoginPage;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,11 +9,15 @@ class SmokeTest extends BaseTest {
 
     @Test
     void shouldOpenApplication() {
-        PlaywrightFactory.page().navigate(FrameworkConfig.baseUrl());
+
+        LoginPage loginPage = new LoginPage();
+
+        loginPage.open();
 
         assertEquals(
                 "Swag Labs",
-                PlaywrightFactory.page().title()
+                loginPage.getTitle()
         );
     }
+
 }
