@@ -28,9 +28,9 @@ public class InventoryPage extends BasePage {
     /**
      * Returns true when the inventory page is loaded.
      *
-     * @return true if inventory page is visible
+     * @return true if inventory page is loaded
      */
-    public boolean isDisplayed() {
+    public boolean isLoaded() {
         waitForVisible(inventoryContainer);
         return isVisible(inventoryContainer);
     }

@@ -20,7 +20,7 @@ class LoginTest extends BaseTest {
                         );
 
         assertTrue(
-                inventoryPage.isDisplayed()
+                inventoryPage.isLoaded()
         );
     }
 
