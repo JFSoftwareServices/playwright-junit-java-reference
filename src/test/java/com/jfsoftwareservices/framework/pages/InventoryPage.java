@@ -8,13 +8,13 @@ public class InventoryPage extends BasePage {
             page.getByTestId("title");
 
     private final Locator inventoryContainer =
-            page.getByTestId("inventory_container");
+            page.getByTestId("inventory-container");
 
     private final Locator menuButton =
             page.getByTestId("react-burger-menu-btn");
 
     private final Locator logoutLink =
-            page.getByTestId("logout_sidebar_link");
+            page.getByTestId("logout-sidebar-link");
 
     /**
      * Returns the page heading.
