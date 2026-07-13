@@ -3,6 +3,7 @@ package com.jfsoftwareservices.framework.pages;
 import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 public abstract class BasePage {
 
@@ -17,18 +18,22 @@ public abstract class BasePage {
     }
 
     protected void click(Locator locator) {
+        waitForVisible(locator);
         locator.click();
     }
 
     protected void fill(Locator locator, String value) {
+        waitForVisible(locator);
         locator.fill(value);
     }
 
     protected void type(Locator locator, String value) {
+        waitForVisible(locator);
         locator.type(value);
     }
 
     protected String getText(Locator locator) {
+        waitForVisible(locator);
         return locator.textContent();
     }
 
@@ -37,7 +42,10 @@ public abstract class BasePage {
     }
 
     protected void waitForVisible(Locator locator) {
-        locator.waitFor();
+        locator.waitFor(
+                new Locator.WaitForOptions()
+                        .setState(WaitForSelectorState.VISIBLE)
+        );
     }
 
     public String getTitle() {
