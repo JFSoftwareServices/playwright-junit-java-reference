@@ -1,60 +1,33 @@
 package com.jfsoftwareservices.framework.pages;
 
+import com.jfsoftwareservices.framework.components.HeaderComponent;
+import com.jfsoftwareservices.framework.components.SideMenuComponent;
 import com.microsoft.playwright.Locator;
 
 public class InventoryPage extends BasePage {
 
-    private final Locator pageTitle =
-            page.getByTestId("title");
-
     private final Locator inventoryContainer =
             page.getByTestId("inventory-container");
 
-    private final Locator menuButton =
-            page.locator("#react-burger-menu-btn");
+    private final HeaderComponent header =
+            new HeaderComponent(page);
 
-    private final Locator logoutLink =
-            page.getByTestId("logout-sidebar-link");
+    private final SideMenuComponent sideMenu =
+            new SideMenuComponent(page);
 
-    /**
-     * Returns the page heading.
-     *
-     * @return page heading
-     */
-    public String getPageHeading() {
-        return getText(pageTitle);
-    }
-
-    /**
-     * Returns true when the inventory page is loaded.
-     *
-     * @return true if inventory page is loaded
-     */
     public boolean isLoaded() {
+
         waitForVisible(inventoryContainer);
+
         return isVisible(inventoryContainer);
     }
 
-    /**
-     * Opens the application menu.
-     *
-     * @return InventoryPage
-     */
-    public InventoryPage openMenu() {
-        click(menuButton);
-        return this;
+    public HeaderComponent header() {
+        return header;
     }
 
-    /**
-     * Logs the current user out.
-     *
-     * @return LoginPage
-     */
-    public LoginPage logout() {
-        openMenu();
-        click(logoutLink);
-
-        return new LoginPage();
+    public SideMenuComponent menu() {
+        return sideMenu;
     }
 
 }

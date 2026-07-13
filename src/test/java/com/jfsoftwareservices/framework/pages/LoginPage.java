@@ -6,13 +6,13 @@ import com.microsoft.playwright.Locator;
 public class LoginPage extends BasePage {
 
     private final Locator usernameField =
-            page.locator("#user-name");
+            page.getByTestId("username");
 
     private final Locator passwordField =
-            page.locator("#password");
+            page.getByTestId("password");
 
     private final Locator loginButton =
-            page.locator("#login-button");
+            page.getByTestId("login-button");
 
     private final Locator errorMessage =
             page.locator("[data-test='error']");
@@ -71,7 +71,6 @@ public class LoginPage extends BasePage {
 
         enterUsername(username);
         enterPassword(password);
-
         return clickLogin();
     }
 
@@ -85,4 +84,8 @@ public class LoginPage extends BasePage {
         return getText(errorMessage);
     }
 
+    public boolean isLoaded() {
+        waitForVisible(usernameField);
+        return isVisible(usernameField);
+    }
 }

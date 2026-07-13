@@ -82,3 +82,11 @@ See:
 - BaseComponent
 - Parallel Execution
 - Page Object Model
+
+## Page Object Model
+
+The framework uses a Component-Based Page Object Model (CBPOM).
+
+Pages represent application screens.
+
+Components represent reusable UI sections shared across pages.
