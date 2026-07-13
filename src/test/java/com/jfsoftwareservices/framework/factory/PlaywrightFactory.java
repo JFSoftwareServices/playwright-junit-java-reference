@@ -26,6 +26,7 @@ public final class PlaywrightFactory {
 
     public static void initialise() {
         Playwright playwright = Playwright.create();
+        playwright.selectors().setTestIdAttribute("data-test");
         PLAYWRIGHT.set(playwright);
 
         Browser browser = launchBrowser(playwright);

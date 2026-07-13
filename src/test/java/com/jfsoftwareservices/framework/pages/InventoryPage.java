@@ -5,16 +5,16 @@ import com.microsoft.playwright.Locator;
 public class InventoryPage extends BasePage {
 
     private final Locator pageTitle =
-            page.locator("[data-test='title']");
+            page.getByTestId("title");
 
     private final Locator inventoryContainer =
-            page.locator("#inventory_container");
+            page.getByTestId("inventory_container");
 
     private final Locator menuButton =
-            page.locator("#react-burger-menu-btn");
+            page.getByTestId("react-burger-menu-btn");
 
     private final Locator logoutLink =
-            page.locator("#logout_sidebar_link");
+            page.getByTestId("logout_sidebar_link");
 
     /**
      * Returns the page heading.
@@ -22,14 +22,13 @@ public class InventoryPage extends BasePage {
      * @return page heading
      */
     public String getPageHeading() {
-        waitForVisible(pageTitle);
         return getText(pageTitle);
     }
 
     /**
-     * Returns true when the inventory page is displayed.
+     * Returns true when the inventory page is loaded.
      *
-     * @return true if inventory page is displayed
+     * @return true if inventory page is visible
      */
     public boolean isDisplayed() {
         waitForVisible(inventoryContainer);
