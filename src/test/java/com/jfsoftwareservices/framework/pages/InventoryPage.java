@@ -11,7 +11,7 @@ public class InventoryPage extends BasePage {
             page.getByTestId("inventory-container");
 
     private final Locator menuButton =
-            page.getByTestId("react-burger-menu-btn");
+            page.locator("#react-burger-menu-btn");
 
     private final Locator logoutLink =
             page.getByTestId("logout-sidebar-link");
