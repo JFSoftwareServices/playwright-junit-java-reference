@@ -73,3 +73,12 @@ See:
 See:
 
 /docs/architecture.md
+
+## Core Framework
+
+- Playwright Factory
+- BaseUiObject
+- BasePage
+- BaseComponent
+- Parallel Execution
+- Page Object Model

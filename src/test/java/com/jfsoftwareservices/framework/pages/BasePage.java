@@ -1,51 +1,19 @@
 package com.jfsoftwareservices.framework.pages;
 
 import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.WaitForSelectorState;
+import com.jfsoftwareservices.framework.ui.BaseUiObject;
 
-public abstract class BasePage {
-
-    protected final Page page;
+/**
+ * Base class for all application pages.
+ */
+public abstract class BasePage extends BaseUiObject {
 
     protected BasePage() {
-        this.page = PlaywrightFactory.page();
+        super(PlaywrightFactory.page());
     }
 
     protected void navigate(String url) {
         page.navigate(url);
-    }
-
-    protected void click(Locator locator) {
-        waitForVisible(locator);
-        locator.click();
-    }
-
-    protected void fill(Locator locator, String value) {
-        waitForVisible(locator);
-        locator.fill(value);
-    }
-
-    protected void type(Locator locator, String value) {
-        waitForVisible(locator);
-        locator.type(value);
-    }
-
-    protected String getText(Locator locator) {
-        waitForVisible(locator);
-        return locator.textContent();
-    }
-
-    protected boolean isVisible(Locator locator) {
-        return locator.isVisible();
-    }
-
-    protected void waitForVisible(Locator locator) {
-        locator.waitFor(
-                new Locator.WaitForOptions()
-                        .setState(WaitForSelectorState.VISIBLE)
-        );
     }
 
     public String getTitle() {
@@ -54,5 +22,17 @@ public abstract class BasePage {
 
     public String getCurrentUrl() {
         return page.url();
+    }
+
+    public void refresh() {
+        page.reload();
+    }
+
+    public void goBack() {
+        page.goBack();
+    }
+
+    public void goForward() {
+        page.goForward();
     }
 }
