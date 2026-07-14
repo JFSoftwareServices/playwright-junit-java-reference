@@ -3,6 +3,7 @@ package com.jfsoftwareservices.framework.pages;
 import com.jfsoftwareservices.framework.components.HeaderComponent;
 import com.jfsoftwareservices.framework.components.SideMenuComponent;
 import com.microsoft.playwright.Locator;
+import io.qameta.allure.Step;
 
 public class InventoryPage extends BasePage {
 
@@ -15,10 +16,9 @@ public class InventoryPage extends BasePage {
     private final SideMenuComponent sideMenu =
             new SideMenuComponent(page);
 
+    @Step("Verify inventory page is displayed")
     public boolean isLoaded() {
-
         waitForVisible(inventoryContainer);
-
         return isVisible(inventoryContainer);
     }
 
