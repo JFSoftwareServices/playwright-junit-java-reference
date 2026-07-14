@@ -2,6 +2,7 @@ package com.jfsoftwareservices.framework.components;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
 
 /**
  * Represents the common application header.
@@ -12,7 +13,11 @@ public class HeaderComponent extends BaseComponent {
             page.getByTestId("title");
 
     private final Locator menuButton =
-            page.getByTestId("open-menu");
+            page.getByRole(
+                    AriaRole.BUTTON,
+                    new Page.GetByRoleOptions()
+                            .setName("Open Menu")
+            );
 
     private final Locator shoppingCart =
             page.getByTestId("shopping-cart-link");
