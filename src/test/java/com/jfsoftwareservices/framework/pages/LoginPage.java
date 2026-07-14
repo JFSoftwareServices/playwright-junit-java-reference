@@ -1,6 +1,7 @@
 package com.jfsoftwareservices.framework.pages;
 
 import com.jfsoftwareservices.framework.config.FrameworkConfig;
+import com.jfsoftwareservices.framework.model.Credentials;
 import com.microsoft.playwright.Locator;
 
 public class LoginPage extends BasePage {
@@ -17,70 +18,45 @@ public class LoginPage extends BasePage {
     private final Locator errorMessage =
             page.locator("[data-test='error']");
 
-    /**
-     * Navigates to the application's login page.
-     *
-     * @return LoginPage
-     */
-    public LoginPage open() {
+    public LoginPage navigateTo() {
         navigate(FrameworkConfig.baseUrl());
         return this;
     }
 
-    /**
-     * Enters the username.
-     *
-     * @param username username
-     * @return LoginPage
-     */
     public LoginPage enterUsername(String username) {
         fill(usernameField, username);
         return this;
     }
 
-    /**
-     * Enters the password.
-     *
-     * @param password password
-     * @return LoginPage
-     */
     public LoginPage enterPassword(String password) {
         fill(passwordField, password);
         return this;
     }
 
-    /**
-     * Clicks Login.
-     *
-     * @return InventoryPage
-     */
-    public InventoryPage clickLogin() {
+    public LoginPage clickLogin() {
         click(loginButton);
+        return this;
+    }
+
+    public InventoryPage loginValidUser(Credentials credentials) {
+        enterUsername(credentials.username());
+        enterPassword(credentials.password());
+
+        click(loginButton);
+
         return new InventoryPage();
     }
 
-    /**
-     * Performs a complete login.
-     *
-     * @param username username
-     * @param password password
-     * @return InventoryPage
-     */
-    public InventoryPage login(String username,
-                               String password) {
+    public LoginPage loginInvalidUser(Credentials credentials) {
+        enterUsername(credentials.username());
+        enterPassword(credentials.password());
 
-        enterUsername(username);
-        enterPassword(password);
-        return clickLogin();
+        click(loginButton);
+
+        return this;
     }
 
-    /**
-     * Returns the login error message.
-     *
-     * @return error message
-     */
     public String getErrorMessage() {
-        waitForVisible(errorMessage);
         return getText(errorMessage);
     }
 

@@ -2,6 +2,7 @@ package com.jfsoftwareservices.tests;
 
 import com.jfsoftwareservices.framework.pages.InventoryPage;
 import com.jfsoftwareservices.framework.pages.LoginPage;
+import com.jfsoftwareservices.testdata.TestUsers;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,15 +12,12 @@ class LogoutTest extends BaseTest {
     @Test
     void shouldLogoutSuccessfully() {
 
-        LoginPage loginPage = new LoginPage();
-
         InventoryPage inventoryPage =
-                loginPage
-                        .open()
-                        .login(
-                        "standard_user",
-                        "secret_sauce"
-                );
+                new LoginPage()
+                        .navigateTo()
+                        .loginValidUser(
+                                TestUsers.standardUser()
+                        );
 
         assertTrue(inventoryPage.isLoaded());
 
