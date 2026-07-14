@@ -16,9 +16,6 @@ public final class TestUsers {
         // Utility class
     }
 
-    /**
-     * Standard user.
-     */
     public static Credentials standardUser() {
         return new Credentials(
                 "standard_user",
@@ -26,9 +23,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Locked out user.
-     */
     public static Credentials lockedOutUser() {
         return new Credentials(
                 "locked_out_user",
@@ -36,9 +30,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Problem user.
-     */
     public static Credentials problemUser() {
         return new Credentials(
                 "problem_user",
@@ -46,9 +37,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Performance glitch user.
-     */
     public static Credentials performanceGlitchUser() {
         return new Credentials(
                 "performance_glitch_user",
@@ -56,9 +44,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Error user.
-     */
     public static Credentials errorUser() {
         return new Credentials(
                 "error_user",
@@ -66,9 +51,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Visual user.
-     */
     public static Credentials visualUser() {
         return new Credentials(
                 "visual_user",
@@ -76,9 +58,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Invalid username and password.
-     */
     public static Credentials invalidCredentials() {
         return new Credentials(
                 "invalid_user",
@@ -86,9 +65,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Valid username with invalid password.
-     */
     public static Credentials invalidPassword() {
         return new Credentials(
                 "standard_user",
@@ -96,9 +72,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Invalid username with valid password.
-     */
     public static Credentials invalidUsername() {
         return new Credentials(
                 "invalid_user",
@@ -106,9 +79,6 @@ public final class TestUsers {
         );
     }
 
-    /**
-     * Empty credentials.
-     */
     public static Credentials emptyCredentials() {
         return new Credentials(
                 "",

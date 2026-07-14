@@ -1,6 +1,6 @@
 package com.jfsoftwareservices.framework.pages;
 
-import com.jfsoftwareservices.framework.config.FrameworkConfig;
+import com.jfsoftwareservices.framework.config.TestConfig;
 import com.jfsoftwareservices.framework.model.Credentials;
 import com.microsoft.playwright.Locator;
 
@@ -19,7 +19,7 @@ public class LoginPage extends BasePage {
             page.locator("[data-test='error']");
 
     public LoginPage navigateTo() {
-        navigate(FrameworkConfig.baseUrl());
+        navigate(TestConfig.baseUrl());
         return this;
     }
 

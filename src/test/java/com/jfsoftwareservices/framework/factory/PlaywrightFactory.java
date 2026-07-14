@@ -1,6 +1,6 @@
 package com.jfsoftwareservices.framework.factory;
 
-import com.jfsoftwareservices.framework.config.FrameworkConfig;
+import com.jfsoftwareservices.framework.config.TestConfig;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
@@ -25,6 +25,18 @@ public final class PlaywrightFactory {
     }
 
     public static void initialise() {
+        System.out.println(
+                "Browser: " + TestConfig.browser()
+        );
+
+        System.out.println(
+                "Headless: " + TestConfig.headless()
+        );
+
+        System.out.println(
+                "Base URL: " + TestConfig.baseUrl()
+        );
+
         Playwright playwright = Playwright.create();
         playwright.selectors().setTestIdAttribute("data-test");
         PLAYWRIGHT.set(playwright);
@@ -36,24 +48,26 @@ public final class PlaywrightFactory {
         CONTEXT.set(context);
 
         Page page = context.newPage();
+        page.setDefaultTimeout(TestConfig.elementTimeout());
+        page.setDefaultNavigationTimeout(TestConfig.navigationTimeout());
         PAGE.set(page);
     }
 
     private static Browser launchBrowser(Playwright playwright) {
         BrowserType browserType = switch (
-                FrameworkConfig.browser().toLowerCase()
+                TestConfig.browser().toLowerCase()
                 ) {
             case "chromium" -> playwright.chromium();
             case "firefox" -> playwright.firefox();
             case "webkit" -> playwright.webkit();
             default -> throw new IllegalArgumentException(
-                    "Unsupported browser: " + FrameworkConfig.browser()
+                    "Unsupported browser: " + TestConfig.browser()
             );
         };
 
         return browserType.launch(
                 new BrowserType.LaunchOptions()
-                        .setHeadless(FrameworkConfig.headless())
+                        .setHeadless(TestConfig.headless())
         );
     }
 
