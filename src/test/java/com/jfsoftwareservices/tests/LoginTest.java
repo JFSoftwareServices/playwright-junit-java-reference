@@ -27,9 +27,7 @@ class LoginTest extends BaseTest {
                                 TestUsers.standardUser()
                         );
 
-        assertEquals(
-                "Products",
-                inventoryPage.header().getTitle()
+        assertEquals("Products", inventoryPage.header().getTitle()
         );
     }
 
@@ -47,9 +45,7 @@ class LoginTest extends BaseTest {
                                 TestUsers.invalidCredentials()
                         );
 
-        assertEquals(
-                "Epic sadface: Username and password do not match any user in this service",
-                loginPage.getErrorMessage()
+        assertEquals("Epic sadface: Username and password do not match any user in this service", loginPage.getErrorMessage()
         );
     }
 }
