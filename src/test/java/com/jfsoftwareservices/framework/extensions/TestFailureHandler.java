@@ -1,9 +1,7 @@
 package com.jfsoftwareservices.framework.extensions;
 
 import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
-import com.jfsoftwareservices.framework.utils.ScreenshotUtils;
-import com.jfsoftwareservices.framework.utils.TraceUtils;
-import com.jfsoftwareservices.framework.utils.VideoUtils;
+import com.jfsoftwareservices.framework.utils.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 
@@ -17,6 +15,8 @@ public class TestFailureHandler implements TestExecutionExceptionHandler {
         System.out.println("FAILURE HANDLER FIRED: " + testName);
         ScreenshotUtils.capture(PlaywrightFactory.page(), testName);
         TraceUtils.capture(PlaywrightFactory.context(), testName);
+        ConsoleUtils.attach(PlaywrightFactory.consoleMessages());
+        NetworkLogUtils.attach(PlaywrightFactory.networkLogs());
         Path video = PlaywrightFactory.videoPath();
         VideoUtils.attach(video);
         throw throwable;// allow JUnit to report the test failure

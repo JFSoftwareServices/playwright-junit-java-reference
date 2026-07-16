@@ -14,7 +14,8 @@ Allure enhances test reporting by providing:
 - Failure analysis
 - Automatic screenshot capture on failure
 - Automatic Playwright trace capture on failure
-- Support for additional attachments such as logs
+- Automatic browser console log capture on failure
+- Support for additional diagnostic attachments
 
 The integration uses:
 
@@ -149,6 +150,7 @@ Login with valid user: standard_user
     ✓ Click login button
 ```
 
+
 ---
 
 # Failure Attachments
@@ -159,8 +161,12 @@ Current failure attachments include:
 
 - Playwright screenshots
 - Playwright traces
+- Browser console logs
 
-These attachments are automatically added to the Allure report for easier failure investigation.
+These attachments are automatically added to the failed test in the Allure report for easier failure investigation.
+
+
+---
 
 ## Screenshot Capture
 
@@ -178,6 +184,9 @@ test-results/
 - attached to the corresponding failed test in the Allure report.
 
 This allows the final browser state to be inspected without rerunning the test.
+
+
+---
 
 ## Playwright Trace Capture
 
@@ -204,6 +213,117 @@ Playwright traces contain:
 
 These traces provide detailed insight into how the browser reached the failure state.
 
+
+---
+
+## Browser Console Log Capture
+
+The framework captures browser console messages during test execution.
+
+Console messages are collected from the Playwright page and attached to failed tests in the Allure report.
+
+Browser console logging helps identify client-side problems that may not be visible from the test failure alone.
+
+Captured messages may include:
+
+- JavaScript errors
+- Browser warnings
+- Failed resource requests
+- Frontend application logs
+
+
+Example:
+
+```
+ERROR: Failed to load resource: server returned 500
+
+WARNING: Deprecated API usage
+
+INFO: User authentication completed
+```
+
+
+The Allure report displays the console logs as an attachment:
+
+```
+Failed Test
+
+    +-- Screenshot on failure
+    |
+    +-- Playwright Trace
+    |
+    +-- Browser Console Logs
+```
+
+
+Browser console capture is particularly useful for diagnosing:
+
+- Frontend JavaScript failures
+- API integration issues
+- Authentication problems
+- Client-side rendering errors
+
+
+---
+
+# Network Request Logging
+
+The framework captures browser network activity using Playwright request and response listeners.
+
+Network logging provides visibility into communication between the browser and backend services.
+
+Captured information includes:
+
+- HTTP method
+- Request URL
+- Response status code
+- Failed requests
+
+
+Example:
+
+```text
+GET https://www.saucedemo.com/
+STATUS: 200
+
+
+POST https://api.example.com/login
+STATUS: 401
+
+
+GET https://api.example.com/products
+STATUS: 500
+```
+Network reporting helps diagnose:
+
+API failures
+Authentication problems
+Incorrect backend responses
+Missing resources
+Frontend/backend integration issues
+
+The captured network information is attached to failed tests in the Allure report.
+
+Example:
+
+```
+Failed Test
+
+    +-- Screenshot on failure
+    |
+    +-- Playwright Trace
+    |
+    +-- Browser Console Logs 
+    |
+    +-- Network Logs
+```
+Network capture is especially useful for:
+
+REST API integrations
+Microservice applications
+Authentication flows
+Financial/trading applications where UI behaviour depends on backend services
+
 ## Viewing Playwright Traces
 
 Playwright traces can be viewed using the Playwright Trace Viewer.
@@ -215,6 +335,7 @@ npx playwright show-trace test-results/traces/<trace-file>.zip
 ```
 
 The Trace Viewer provides an interactive timeline of the test execution, allowing inspection of every recorded browser action.
+
 
 ---
 
@@ -409,7 +530,11 @@ CI Allure Plugin
 Published HTML Report
 ```
 
-The pipeline does not require `allure serve`.
+The pipeline does not require:
+
+```bash
+allure serve
+```
 
 The CI server generates and publishes the report automatically.
 
@@ -420,8 +545,6 @@ The CI server generates and publishes the report automatically.
 
 Planned reporting improvements:
 
-- Browser console log capture
 - Network request logging
-- Video capture for failed tests
 - Accessibility reporting
 - Performance metrics reporting

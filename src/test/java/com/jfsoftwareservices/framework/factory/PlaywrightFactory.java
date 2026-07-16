@@ -4,6 +4,8 @@ import com.jfsoftwareservices.framework.config.TestConfig;
 import com.microsoft.playwright.*;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class PlaywrightFactory {
 
@@ -18,6 +20,12 @@ public final class PlaywrightFactory {
 
     private static final ThreadLocal<Page> PAGE =
             new ThreadLocal<>();
+
+    private static final ThreadLocal<List<String>> CONSOLE_MESSAGES =
+            ThreadLocal.withInitial(ArrayList::new);
+
+    private static final ThreadLocal<List<String>> NETWORK_LOGS =
+            ThreadLocal.withInitial(ArrayList::new);
 
     private PlaywrightFactory() {
     }
@@ -55,6 +63,42 @@ public final class PlaywrightFactory {
         CONTEXT.set(context);
 
         Page page = context.newPage();
+        page.onConsoleMessage(message ->
+                CONSOLE_MESSAGES.get().add(
+                        "[" + message.type() + "] " + message.text()
+                )
+        );
+
+        page.onRequest(request ->
+                NETWORK_LOGS.get().add(
+                        String.format(
+                                "REQUEST  %s %s",
+                                request.method(),
+                                request.url()
+                        )
+                )
+        );
+
+        page.onResponse(response ->
+                NETWORK_LOGS.get().add(
+                        String.format(
+                                "RESPONSE %3d %s",
+                                response.status(),
+                                response.url()
+                        )
+                )
+        );
+
+        page.onRequestFailed(request ->
+                NETWORK_LOGS.get().add(
+                        String.format(
+                                "FAILED   %s %s (%s)",
+                                request.method(),
+                                request.url(),
+                                request.failure()
+                        )
+                )
+        );
         page.setDefaultTimeout(TestConfig.elementTimeout());
         page.setDefaultNavigationTimeout(TestConfig.navigationTimeout());
         PAGE.set(page);
@@ -95,6 +139,14 @@ public final class PlaywrightFactory {
                 .path();
     }
 
+    public static List<String> consoleMessages() {
+        return CONSOLE_MESSAGES.get();
+    }
+
+    public static List<String> networkLogs() {
+        return NETWORK_LOGS.get();
+    }
+
     public static void close() {
         closeSafely(PAGE.get());
         closeSafely(CONTEXT.get());
@@ -105,6 +157,8 @@ public final class PlaywrightFactory {
         CONTEXT.remove();
         BROWSER.remove();
         PLAYWRIGHT.remove();
+        CONSOLE_MESSAGES.remove();
+        NETWORK_LOGS.remove();
     }
 
     private static void closeSafely(AutoCloseable resource) {

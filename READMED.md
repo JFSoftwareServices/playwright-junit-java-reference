@@ -137,6 +137,9 @@ The framework includes:
 - Allure reporting
 - Automatic screenshots on failure
 - Playwright trace capture
+- Browser console log capture
+- Network request logs
+- Video capture
 - Browser lifecycle management
 - Parallel execution support
 - Configuration management
