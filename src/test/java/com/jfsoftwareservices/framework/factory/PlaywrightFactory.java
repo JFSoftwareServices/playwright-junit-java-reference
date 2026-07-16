@@ -3,6 +3,8 @@ package com.jfsoftwareservices.framework.factory;
 import com.jfsoftwareservices.framework.config.TestConfig;
 import com.microsoft.playwright.*;
 
+import java.nio.file.Path;
+
 public final class PlaywrightFactory {
 
     private static final ThreadLocal<Playwright> PLAYWRIGHT =
@@ -20,18 +22,10 @@ public final class PlaywrightFactory {
     private PlaywrightFactory() {
     }
 
-    public static void initialise() {
-        System.out.println(
-                "Browser: " + TestConfig.browser()
-        );
-
-        System.out.println(
-                "Headless: " + TestConfig.headless()
-        );
-
-        System.out.println(
-                "Base URL: " + TestConfig.baseUrl()
-        );
+    public static void  initialise() {
+        System.out.println("Browser: " + TestConfig.browser());
+        System.out.println("Headless: " + TestConfig.headless());
+        System.out.println("Base URL: " + TestConfig.baseUrl());
 
         Playwright playwright = Playwright.create();
         playwright.selectors().setTestIdAttribute("data-test");
@@ -90,6 +84,15 @@ public final class PlaywrightFactory {
 
     public static BrowserContext context() {
         return CONTEXT.get();
+    }
+
+    public static Path videoPath() {
+        if (PAGE.get() == null) {
+            return null;
+        }
+        return PAGE.get()
+                .video()
+                .path();
     }
 
     public static void close() {

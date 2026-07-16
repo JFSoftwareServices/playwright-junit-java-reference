@@ -13,6 +13,8 @@ public final class ScreenshotUtils {
     }
 
     public static void capture(Page page, String testName) {
+        System.out.println("Screenshot.capture()");
+        System.out.println("page = " + page);
         if (page == null) {
             System.out.println("Screenshot skipped - page is null");
             return;

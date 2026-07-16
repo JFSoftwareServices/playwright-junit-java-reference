@@ -1,6 +1,5 @@
 package com.jfsoftwareservices.framework.utils;
 
-import com.microsoft.playwright.Page;
 import io.qameta.allure.Allure;
 
 import java.io.ByteArrayInputStream;
@@ -12,21 +11,15 @@ public final class VideoUtils {
     private VideoUtils() {
     }
 
-    public static void capture(
-            Page page,
-            String testName) {
-
-        if (page == null) {
-            System.out.println(
-                    "Video skipped - page is null"
-            );
+    public static void attach(Path videoPath) {
+        System.out.println("Video.attach()");
+        System.out.println(videoPath);
+        if (videoPath == null) {
+            System.out.println("Video skipped - no video path");
             return;
         }
-
         try {
-            Path videos = Path.of("test-results", "videos", testName + ".webm");
-            page.video().saveAs(videos);
-            byte[] video = Files.readAllBytes(videos);
+            byte[] video = Files.readAllBytes(videoPath);
             Allure.addAttachment(
                     "Video on failure",
                     "video/webm",
@@ -34,7 +27,7 @@ public final class VideoUtils {
                     ".webm"
             );
         } catch (Exception e) {
-            throw new RuntimeException("Unable to capture video", e);
+            throw new RuntimeException("Unable to attach video", e);
         }
     }
 }

@@ -13,6 +13,8 @@ public final class TraceUtils {
     }
 
     public static void capture(BrowserContext context, String testName) {
+        System.out.println("Trace.capture()");
+        System.out.println("context = " + context);
         if (context == null) {
             System.out.println("Trace skipped - context is null");
             return;
