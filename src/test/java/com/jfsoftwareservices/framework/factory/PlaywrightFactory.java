@@ -40,7 +40,17 @@ public final class PlaywrightFactory {
         Browser browser = launchBrowser(playwright);
         BROWSER.set(browser);
 
-        BrowserContext context = browser.newContext();
+        BrowserContext context =
+                browser.newContext(
+                        new Browser.NewContextOptions()
+                                .setRecordVideoDir(
+                                        java.nio.file.Path.of(
+                                                "test-results",
+                                                "videos"
+                                        )
+                                )
+                );
+
         context.tracing().start(
                 new Tracing.StartOptions()
                         .setScreenshots(true)

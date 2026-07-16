@@ -3,6 +3,7 @@ package com.jfsoftwareservices.framework.extensions;
 import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
 import com.jfsoftwareservices.framework.utils.ScreenshotUtils;
 import com.jfsoftwareservices.framework.utils.TraceUtils;
+import com.jfsoftwareservices.framework.utils.VideoUtils;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
 
@@ -12,6 +13,7 @@ public class TestFailureWatcher implements TestWatcher {
     public void testFailed(ExtensionContext context, Throwable cause) {
         ScreenshotUtils.capture(PlaywrightFactory.page(), context.getDisplayName());
         TraceUtils.capture(PlaywrightFactory.context(), context.getDisplayName());
+        VideoUtils.capture(PlaywrightFactory.page(), context.getDisplayName());
         PlaywrightFactory.close();
     }
 
