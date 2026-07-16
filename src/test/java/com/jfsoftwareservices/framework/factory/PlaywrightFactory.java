@@ -1,11 +1,7 @@
 package com.jfsoftwareservices.framework.factory;
 
 import com.jfsoftwareservices.framework.config.TestConfig;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
 
 public final class PlaywrightFactory {
 
@@ -45,6 +41,13 @@ public final class PlaywrightFactory {
         BROWSER.set(browser);
 
         BrowserContext context = browser.newContext();
+        context.tracing().start(
+                new Tracing.StartOptions()
+                        .setScreenshots(true)
+                        .setSnapshots(true)
+                        .setSources(true)
+        );
+
         CONTEXT.set(context);
 
         Page page = context.newPage();

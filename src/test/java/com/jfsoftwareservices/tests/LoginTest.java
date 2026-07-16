@@ -4,6 +4,8 @@ import com.jfsoftwareservices.framework.pages.InventoryPage;
 import com.jfsoftwareservices.framework.pages.LoginPage;
 import com.jfsoftwareservices.testdata.TestUsers;
 import io.qameta.allure.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
@@ -47,5 +49,17 @@ class LoginTest extends BaseTest {
 
         assertEquals("Epic sadface: Username and password do not match any user in this service", loginPage.getErrorMessage()
         );
+    }
+
+    @Test
+    @Disabled("Used only to verify Playwright trace capture")
+    @DisplayName("Should capture Playwright trace on failure")
+    void should_capture_trace_when_test_fails() {
+        new LoginPage()
+                .navigateTo()
+                .loginValidUser(
+                        TestUsers.standardUser()
+                );
+        Assertions.fail("Intentional failure for trace verification");
     }
 }

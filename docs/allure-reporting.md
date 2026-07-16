@@ -12,7 +12,9 @@ Allure enhances test reporting by providing:
 - Severity classification
 - Test history
 - Failure analysis
-- Attachments (screenshots, traces, logs)
+- Automatic screenshot capture on failure
+- Automatic Playwright trace capture on failure
+- Support for additional attachments such as logs
 
 The integration uses:
 
@@ -147,6 +149,72 @@ Login with valid user: standard_user
     ✓ Click login button
 ```
 
+---
+
+# Failure Attachments
+
+The framework automatically captures diagnostic artifacts when a test fails.
+
+Current failure attachments include:
+
+- Playwright screenshots
+- Playwright traces
+
+These attachments are automatically added to the Allure report for easier failure investigation.
+
+## Screenshot Capture
+
+When a test fails, the framework captures a full-page screenshot of the browser.
+
+The screenshot is:
+
+- saved locally under:
+
+```
+test-results/
+    screenshots/
+```
+
+- attached to the corresponding failed test in the Allure report.
+
+This allows the final browser state to be inspected without rerunning the test.
+
+## Playwright Trace Capture
+
+The framework starts Playwright tracing when a browser context is created.
+
+When a test fails, tracing is stopped and the recorded trace is:
+
+- saved locally under:
+
+```
+test-results/
+    traces/
+```
+
+- attached to the failed test in the Allure report.
+
+Playwright traces contain:
+
+- browser actions
+- page navigation
+- screenshots
+- DOM snapshots
+- timing information
+
+These traces provide detailed insight into how the browser reached the failure state.
+
+## Viewing Playwright Traces
+
+Playwright traces can be viewed using the Playwright Trace Viewer.
+
+If Node.js is installed, open a trace using:
+
+```bash
+npx playwright show-trace test-results/traces/<trace-file>.zip
+```
+
+The Trace Viewer provides an interactive timeline of the test execution, allowing inspection of every recorded browser action.
 
 ---
 
@@ -352,8 +420,8 @@ The CI server generates and publishes the report automatically.
 
 Planned reporting improvements:
 
-- Screenshot capture on failure
-- Playwright trace attachment
 - Browser console log capture
 - Network request logging
 - Video capture for failed tests
+- Accessibility reporting
+- Performance metrics reporting

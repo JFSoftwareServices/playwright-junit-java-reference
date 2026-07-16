@@ -56,16 +56,17 @@ https://www.saucedemo.com/
 
 Detailed framework documentation:
 
-| Document | Description |
-|---|---|
-| [IntelliJ Setup](docs/setup-intellij.md) | Development environment setup |
-| [Architecture](docs/architecture.md) | Framework design and architecture |
-| [Running Tests](docs/running-tests.md) | Test execution commands |
-| [Allure Reporting](docs/allure-reporting.md) | Installing Allure CLI, generating reports, and viewing test results |
-| [Dependency Management](docs/dependency-management.md) | Maven dependencies, version alignment, and troubleshooting |
-| [Browser Lifecycle](docs/browser-lifecycle.md) | Browser and Playwright lifecycle management |
-| [Parallel Execution](docs/parallel-execution.md) | Parallel test execution design |
-| [Troubleshooting](docs/troubleshooting.md) | Common issues and solutions |
+| Document                                                     | Description |
+|--------------------------------------------------------------|---|
+| [IntelliJ Setup](docs/setup-intellij.md)                     | Development environment setup |
+| [Architecture](docs/architecture.md)                         | Framework design and architecture |
+| [Running Tests](docs/running-tests.md)                       | Test execution commands |
+| [Allure Reporting](docs/allure-reporting.md)                 | Installing Allure CLI, generating reports, and viewing test results |
+| [Allure Report Generation](docs/allure_report_generation.md) | Generating reports and viewing Playwright traces |
+| [Dependency Management](docs/dependency-management.md)       | Maven dependencies, version alignment, and troubleshooting |
+| [Browser Lifecycle](docs/browser-lifecycle.md)               | Browser and Playwright lifecycle management |
+| [Parallel Execution](docs/parallel-execution.md)             | Parallel test execution design |
+| [Troubleshooting](docs/troubleshooting.md)                   | Common issues and solutions |
 
 ---
 
@@ -133,6 +134,9 @@ The framework includes:
 - BasePage
 - BaseComponent
 - Page Object Model implementation
+- Allure reporting
+- Automatic screenshots on failure
+- Playwright trace capture
 - Browser lifecycle management
 - Parallel execution support
 - Configuration management
