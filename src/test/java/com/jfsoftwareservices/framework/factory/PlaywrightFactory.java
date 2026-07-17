@@ -1,5 +1,6 @@
 package com.jfsoftwareservices.framework.factory;
 
+import com.jfsoftwareservices.framework.auth.AuthStateManager;
 import com.jfsoftwareservices.framework.config.TestConfig;
 import com.microsoft.playwright.*;
 
@@ -30,7 +31,7 @@ public final class PlaywrightFactory {
     private PlaywrightFactory() {
     }
 
-    public static void  initialise() {
+    public static void  initialise(boolean useAuthenticationState) {
         System.out.println("Browser: " + TestConfig.browser());
         System.out.println("Headless: " + TestConfig.headless());
         System.out.println("Base URL: " + TestConfig.baseUrl());
@@ -42,16 +43,21 @@ public final class PlaywrightFactory {
         Browser browser = launchBrowser(playwright);
         BROWSER.set(browser);
 
-        BrowserContext context =
-                browser.newContext(
-                        new Browser.NewContextOptions()
-                                .setRecordVideoDir(
-                                        java.nio.file.Path.of(
-                                                "test-results",
-                                                "videos"
-                                        )
-                                )
-                );
+        BrowserContext context;
+        if (useAuthenticationState){
+            context = AuthStateManager.authenticatedContext(browser);
+        }else {
+            context =
+                    browser.newContext(
+                            new Browser.NewContextOptions()
+                                    .setRecordVideoDir(
+                                            java.nio.file.Path.of(
+                                                    "test-results",
+                                                    "videos"
+                                            )
+                                    )
+                    );
+        }
 
         context.tracing().start(
                 new Tracing.StartOptions()

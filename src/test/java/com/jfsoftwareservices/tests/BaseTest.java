@@ -12,9 +12,13 @@ public abstract class BaseTest {
     @RegisterExtension
     TestFailureHandler failureHandler = new TestFailureHandler();
 
+    protected boolean authenticated() {
+        return false;
+    }
+
     @BeforeEach
     void setUp() {
-        PlaywrightFactory.initialise();
+        PlaywrightFactory.initialise(authenticated());
     }
 
     @AfterEach

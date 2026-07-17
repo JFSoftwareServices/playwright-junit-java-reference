@@ -129,16 +129,19 @@ The framework separates:
 
 The framework includes:
 
+The framework includes:
+
 - Playwright Factory
 - BaseUiObject
 - BasePage
 - BaseComponent
 - Page Object Model implementation
+- Playwright authentication state management
 - Allure reporting
 - Automatic screenshots on failure
 - Playwright trace capture
 - Browser console log capture
-- Network request logs
+- Network request logging
 - Video capture
 - Browser lifecycle management
 - Parallel execution support
@@ -161,7 +164,6 @@ Planned framework capabilities:
 
 - API testing integration
 - Environment-based configuration
-- Authentication handling
 - Docker execution
 - CI/CD pipeline integration
 - Cloud browser execution

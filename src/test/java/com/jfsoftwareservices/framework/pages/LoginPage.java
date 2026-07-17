@@ -1,8 +1,10 @@
 package com.jfsoftwareservices.framework.pages;
 
 import com.jfsoftwareservices.framework.config.TestConfig;
+import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
 import com.jfsoftwareservices.framework.model.Credentials;
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
 import io.qameta.allure.Step;
 
 public class LoginPage extends BasePage {
@@ -18,6 +20,14 @@ public class LoginPage extends BasePage {
 
     private final Locator errorMessage =
             page.locator("[data-test='error']");
+
+    public LoginPage(Page page) {
+        super(page);
+    }
+
+    public LoginPage() {
+        super(PlaywrightFactory.page());
+    }
 
     @Step("Navigate to application login page")
     public LoginPage navigateTo() {
