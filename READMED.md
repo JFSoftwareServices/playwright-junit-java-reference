@@ -49,6 +49,7 @@ https://www.saucedemo.com/
 | Cucumber | BDD support |
 | Allure | Test reporting |
 | Allure Commandline | Local report generation and viewing |
+| GitHub Actions | Continuous integration pipeline |
 | Docker | Containerised test execution |
 
 ---
@@ -68,7 +69,9 @@ Detailed framework documentation:
 | [Browser Lifecycle](docs/browser-lifecycle.md)               | Browser and Playwright lifecycle management |
 | [Parallel Execution](docs/parallel-execution.md)             | Parallel test execution design |
 | [Troubleshooting](docs/troubleshooting.md)                   | Common issues and solutions |
+| [GitHub Actions](docs/github-actions.md) | CI pipeline configuration and automated test execution |
 | [Docker Execution](docs/docker-execution.md)                 | Running tests using Docker containers |
+
 
 ---
 
@@ -133,7 +136,9 @@ The framework separates:
 - Page behaviour
 - Reusable UI components
 - Browser management
-- Configuration handling
+- Configuration management
+- GitHub Actions CI pipeline
+- Docker-based execution
 
 ---
 
@@ -176,7 +181,6 @@ Planned framework capabilities:
 
 - API testing integration
 - Environment-based configuration
-- Docker execution
-- CI/CD pipeline integration
 - Cloud browser execution
 - Enhanced Allure reporting
+- Deployment promotion workflows
