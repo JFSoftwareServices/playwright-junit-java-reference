@@ -52,7 +52,7 @@ class LoginTest extends BaseTest {
     }
 
     @Test
-    //@Disabled("Used only to verify Playwright trace capture")
+    @Disabled("Used only to verify Playwright trace capture")
     @DisplayName("Should capture Playwright trace on failure")
     void should_capture_trace_when_test_fails() {
         new LoginPage()
