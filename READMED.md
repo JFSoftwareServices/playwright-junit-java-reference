@@ -49,6 +49,7 @@ https://www.saucedemo.com/
 | Cucumber | BDD support |
 | Allure | Test reporting |
 | Allure Commandline | Local report generation and viewing |
+| Docker | Containerised test execution |
 
 ---
 
@@ -67,6 +68,7 @@ Detailed framework documentation:
 | [Browser Lifecycle](docs/browser-lifecycle.md)               | Browser and Playwright lifecycle management |
 | [Parallel Execution](docs/parallel-execution.md)             | Parallel test execution design |
 | [Troubleshooting](docs/troubleshooting.md)                   | Common issues and solutions |
+| [Docker Execution](docs/docker-execution.md)                 | Running tests using Docker containers |
 
 ---
 
@@ -75,6 +77,16 @@ Detailed framework documentation:
 Follow the setup guide:
 
 [Setup IntelliJ](docs/setup-intellij.md)
+
+---
+
+## Running with Docker
+
+Docker execution requires Docker to be installed on the host machine.
+
+See:
+
+[Docker Execution](docs/docker-execution.md)
 
 ---
 

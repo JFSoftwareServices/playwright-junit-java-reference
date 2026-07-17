@@ -1,0 +1,17 @@
+services:
+
+  playwright-tests:
+    build:
+      context: .
+
+    container_name: playwright-java-tests
+
+    volumes:
+      - ./test-results:/app/test-results
+
+    environment:
+      BROWSER: chromium
+      HEADLESS: true
+
+    command:
+      mvn clean test

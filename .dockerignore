@@ -1,0 +1,7 @@
+target/
+.idea/
+.git/
+test-results/
+allure-report/
+*.iml
+.DS_Store
