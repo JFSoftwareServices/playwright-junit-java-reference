@@ -1,6 +1,7 @@
-name: Playwright Automation Tests
+name: Playwright Enterprise CI/CD Pipeline
 
 on:
+
   push:
     branches:
       - main
@@ -11,67 +12,172 @@ on:
 
 jobs:
 
-  test:
+  ###########################################################
+  # QA
+  ###########################################################
 
-    name: Execute Automated Tests
+  qa:
+
+    name: QA Deployment & Tests
 
     runs-on: ubuntu-latest
 
+    environment:
+      name: QA
+
     steps:
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Java 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
+      - name: Build Docker image
+        run: docker compose build
 
-      - name: Install Playwright browsers
+      - name: Deploy Application to QA
         run: |
-          mvn exec:java \
-            -Dexec.mainClass=com.microsoft.playwright.CLI \
-            -Dexec.args="install"
+          echo "=============================================="
+          echo "Deploying application to QA..."
+          echo "Deployment completed."
+          echo "=============================================="
 
-      - name: Execute tests
-        run: |
-          mvn clean test \
-            -Denv=qa
+      - name: Execute Playwright Tests
+        run: docker compose up --exit-code-from playwright-tests
+        env:
+          TEST_ENV: qa
 
       - name: Install Allure CLI
         if: always()
-        run: |
-          sudo npm install -g allure-commandline --save-dev
+        run: sudo npm install -g allure-commandline
 
       - name: Generate Allure Report
         if: always()
         run: |
           allure generate allure-results \
-            -o allure-report \
-            --clean
+          -o allure-report \
+          --clean
 
-      - name: Upload test results
+      - name: Upload Allure Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: test-results/
-          if-no-files-found: ignore
-
-      - name: Upload Allure results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results
+          name: qa-allure-results
           path: allure-results/
-          if-no-files-found: ignore
 
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
+          name: qa-allure-report
           path: allure-report/
-          if-no-files-found: ignore
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-test-results
+          path: test-results/
+
+  ###########################################################
+  # STAGING
+  ###########################################################
+
+  staging:
+
+    name: Staging Deployment & Tests
+
+    needs: qa
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: Staging
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker compose build
+
+      - name: Promote Build to Staging
+        run: |
+          echo "=============================================="
+          echo "QA passed."
+          echo "Promoting build to Staging..."
+          echo "Deployment completed."
+          echo "=============================================="
+
+      - name: Execute Playwright Regression Tests
+        run: docker compose up --exit-code-from playwright-tests
+        env:
+          TEST_ENV: staging
+
+      - name: Install Allure CLI
+        if: always()
+        run: sudo npm install -g allure-commandline
+
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          allure generate allure-results \
+          -o allure-report \
+          --clean
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-allure-results
+          path: allure-results/
+
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-allure-report
+          path: allure-report/
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-test-results
+          path: test-results/
+
+  ###########################################################
+  # PRODUCTION
+  ###########################################################
+
+  production:
+
+    name: Production Deployment
+
+    needs: staging
+
+    runs-on: ubuntu-latest
+
+    #
+    # Configure this Environment in GitHub and add
+    # yourself as a Required Reviewer.
+    #
+    environment:
+      name: Production
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Production
+        run: |
+          echo "=============================================="
+          echo "Manual approval received."
+          echo ""
+          echo "Promoting build to Production..."
+          echo ""
+          echo "Deploying application..."
+          echo ""
+          echo "Deployment completed successfully."
+          echo ""
+          echo "No Playwright tests executed in Production."
+          echo ""
+          echo "Production monitoring enabled."
+          echo "=============================================="

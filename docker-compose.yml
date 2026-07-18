@@ -1,17 +1,25 @@
 services:
 
   playwright-tests:
+
     build:
       context: .
 
-    container_name: playwright-java-tests
-
+    # Mount test output directories between the Docker container and the host machine.
+    # A mount creates a shared link between a folder inside the container and a folder
+    # on the host machine, allowing files generated inside Docker to persist outside
+    # the container after it exits.
+    #
+    # Volume syntax: HOST_MACHINE_PATH:CONTAINER_PATH
+    # - HOST_MACHINE_PATH  -> folder on the local machine / CI runner
+    # - CONTAINER_PATH     -> folder inside the running Docker container
+    #
+    # This persists screenshots, videos, traces, and Allure test results so they are
+    # available for local debugging and report generation after the container exits.
     volumes:
       - ./test-results:/app/test-results
+      - ./allure-results:/app/allure-results
 
-    environment:
-      BROWSER: chromium
-      HEADLESS: true
-
-    command:
+    command: >
       mvn clean test
+      -Denv=${TEST_ENV}
