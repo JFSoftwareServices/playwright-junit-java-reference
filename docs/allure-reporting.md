@@ -12,6 +12,7 @@ Allure enhances test reporting by providing:
 - Severity classification
 - Test history
 - Failure analysis
+- Automatic videos
 - Automatic screenshot capture on failure
 - Automatic Playwright trace capture on failure
 - Automatic browser console log capture on failure
@@ -23,6 +24,10 @@ The integration uses:
 - Allure Maven plugin
 - Allure Commandline
 
+> **Note:** This document covers what the framework *records* into a test
+> run (annotations, steps, failure attachments, network logs) and how that
+> flows into CI. For installing Allure Commandline and generating/viewing
+> the HTML report itself, see [Allure Report Generation](allure_report_generation.md).
 
 ---
 
@@ -37,7 +42,7 @@ JUnit 5 Tests
 allure-junit5
        |
        v
-target/allure-results
+allure-results
        |
        v
 Allure Commandline
@@ -45,7 +50,6 @@ Allure Commandline
        v
 HTML Test Report
 ```
-
 
 ---
 
@@ -64,7 +68,6 @@ The framework uses:
 
 The dependency integrates JUnit 5 test execution with Allure.
 
-
 The Maven plugin generates Allure reports:
 
 ```xml
@@ -73,7 +76,6 @@ The Maven plugin generates Allure reports:
     <artifactId>allure-maven</artifactId>
 </plugin>
 ```
-
 
 ---
 
@@ -116,7 +118,6 @@ Epic
              +-- Test
 ```
 
-
 ---
 
 # Allure Steps
@@ -150,7 +151,6 @@ Login with valid user: standard_user
     ✓ Click login button
 ```
 
-
 ---
 
 # Failure Attachments
@@ -162,9 +162,18 @@ Current failure attachments include:
 - Playwright screenshots
 - Playwright traces
 - Browser console logs
+- Videos
 
 These attachments are automatically added to the failed test in the Allure report for easier failure investigation.
 
+<!-- ADDED: clarifies that video recording itself is not failure-only,
+     even though video only appears as a report attachment on failure —
+     this distinction wasn't previously stated anywhere in the doc. -->
+> **Note:** Videos are the one exception to "capture on failure" — video
+> recording runs for every test regardless of outcome (see
+> [Video Capture](#video-capture) below). Only the failure-attachment
+> *inclusion in the report* is failure-only, same as the other attachments
+> in this list.
 
 ---
 
@@ -184,7 +193,6 @@ test-results/
 - attached to the corresponding failed test in the Allure report.
 
 This allows the final browser state to be inspected without rerunning the test.
-
 
 ---
 
@@ -213,6 +221,39 @@ Playwright traces contain:
 
 These traces provide detailed insight into how the browser reached the failure state.
 
+To open a captured trace interactively, see **Viewing Playwright Traces**
+in [Allure Report Generation](allure_report_generation.md).
+
+---
+
+## Video Capture
+
+<!-- ADDED: new subsection, matching the structure of Screenshot Capture and
+     Playwright Trace Capture above. Documents the recording-vs-attachment
+     distinction requested: videos record for every test, pass or fail, but
+     are only attached to the Allure report for failed tests. -->
+
+Unlike screenshots and traces, video recording is **not** conditional on
+test outcome. The framework records a video for every test that runs,
+regardless of whether it passes or fails.
+
+Videos are:
+
+- saved locally under:
+
+```
+test-results/
+    videos/
+```
+
+- attached to the Allure report **only for failed tests**.
+
+Videos for passing tests are still written to `test-results/videos/` on
+disk, but are not attached to the Allure report — they are not needed to
+diagnose a pass, and attaching video for every test would add unnecessary
+size and noise to the report. If a passing test's video needs to be
+reviewed, it can still be found in `test-results/videos/` directly, outside
+of Allure.
 
 ---
 
@@ -231,7 +272,6 @@ Captured messages may include:
 - Failed resource requests
 - Frontend application logs
 
-
 Example:
 
 ```
@@ -241,7 +281,6 @@ WARNING: Deprecated API usage
 
 INFO: User authentication completed
 ```
-
 
 The Allure report displays the console logs as an attachment:
 
@@ -255,14 +294,12 @@ Failed Test
     +-- Browser Console Logs
 ```
 
-
 Browser console capture is particularly useful for diagnosing:
 
 - Frontend JavaScript failures
 - API integration issues
 - Authentication problems
 - Client-side rendering errors
-
 
 ---
 
@@ -279,7 +316,6 @@ Captured information includes:
 - Response status code
 - Failed requests
 
-
 Example:
 
 ```text
@@ -294,13 +330,14 @@ STATUS: 401
 GET https://api.example.com/products
 STATUS: 500
 ```
+
 Network reporting helps diagnose:
 
-API failures
-Authentication problems
-Incorrect backend responses
-Missing resources
-Frontend/backend integration issues
+- API failures
+- Authentication problems
+- Incorrect backend responses
+- Missing resources
+- Frontend/backend integration issues
 
 The captured network information is attached to failed tests in the Allure report.
 
@@ -313,74 +350,19 @@ Failed Test
     |
     +-- Playwright Trace
     |
-    +-- Browser Console Logs 
+    +-- Browser Console Logs
     |
     +-- Network Logs
+    |
+    +-- Videos
 ```
+
 Network capture is especially useful for:
 
-REST API integrations
-Microservice applications
-Authentication flows
-Financial/trading applications where UI behaviour depends on backend services
-
-## Viewing Playwright Traces
-
-Playwright traces can be viewed using the Playwright Trace Viewer.
-
-If Node.js is installed, open a trace using:
-
-```bash
-npx playwright show-trace test-results/traces/<trace-file>.zip
-```
-
-The Trace Viewer provides an interactive timeline of the test execution, allowing inspection of every recorded browser action.
-
-
----
-
-# Installing Allure Commandline
-
-Allure Commandline is required to generate and view reports locally.
-
-## Windows
-
-### Using Chocolatey
-
-```powershell
-choco install allure
-```
-
-### Using Scoop
-
-```powershell
-scoop install allure
-```
-
-
-Verify installation:
-
-```powershell
-allure --version
-```
-
-
----
-
-## macOS
-
-Using Homebrew:
-
-```bash
-brew install allure
-```
-
-Verify:
-
-```bash
-allure --version
-```
-
+- REST API integrations
+- Microservice applications
+- Authentication flows
+- Financial/trading applications where UI behaviour depends on backend services
 
 ---
 
@@ -395,156 +377,30 @@ mvn clean test
 After execution, Allure results are generated:
 
 ```
-target/
- |
- +-- allure-results/
-       |
-       +-- *.json
+allure-results/
+  |
+  +-- *.json
 ```
 
-
----
-
-# Viewing Allure Reports
-
-Start a local report:
-
-```bash
-allure serve target/allure-results
-```
-
-This will:
-
-1. Read the generated Allure results
-2. Generate an HTML report
-3. Start a temporary local web server
-4. Open the report in the browser
-
-
----
-
-# Generating a Permanent Report
-
-To generate a report directory:
-
-```bash
-allure generate target/allure-results -o target/allure-report
-```
-
-Open the generated report:
-
-```bash
-allure open target/allure-report
-```
-
-
----
-
-# Troubleshooting
-
-## No Allure Results Generated
-
-Check that tests completed successfully:
-
-```bash
-mvn clean test
-```
-
-Verify:
-
-```
-target/allure-results
-```
-
-exists.
-
-
----
-
-## Allure Command Not Found
-
-Example:
-
-```
-allure: command not found
-```
-
-Install Allure Commandline and restart the terminal.
-
-
----
-
-## JUnit Platform Version Alignment
-
-JUnit 5 consists of multiple components:
-
-```
-JUnit Jupiter
-        |
-        v
-JUnit Platform Engine
-        |
-        v
-JUnit Platform Launcher
-```
-
-All components must use compatible versions.
-
-A version mismatch can cause errors during test discovery, for example:
-
-```
-OutputDirectoryProvider not available;
-probably due to unaligned versions of the
-junit-platform-engine and junit-platform-launcher jars
-```
-
-This framework resolves version alignment by ensuring:
-
-```
-JUnit Jupiter          5.13.4
-JUnit Platform         1.13.4
-```
-
-are using the same release family.
-
+To install Allure Commandline and generate or view the HTML report from
+these results, see [Allure Report Generation](allure_report_generation.md).
 
 ---
 
 # CI/CD Integration
 
-In CI/CD pipelines:
+For the concrete GitHub Actions workflow steps used by this project
+(including how results are uploaded and where the report is stored),
+see [GitHub Actions](github-actions.md).
 
-```
-Build Pipeline
-      |
-      v
-mvn test
-      |
-      v
-allure-results
-      |
-      v
-CI Allure Plugin
-      |
-      v
-Published HTML Report
-```
+For running the suite — and generating results — inside a container, see
+[Docker Execution](docker-execution.md).
 
-The pipeline does not require:
-
-```bash
-allure serve
-```
-
-The CI server generates and publishes the report automatically.
-
+Result files use the same `allure-results` path described in this document. However,
+that directory exists inside the container's filesystem by default. To generate a report
+afterward, mount `allure-results/` as a
+volume so it's accessible on the host once
+the container exits — otherwise it will
+need to be copied out manually before running `allure generate`.
 
 ---
-
-# Future Enhancements
-
-Planned reporting improvements:
-
-- Network request logging
-- Accessibility reporting
-- Performance metrics reporting

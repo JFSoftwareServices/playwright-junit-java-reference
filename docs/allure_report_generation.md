@@ -1,4 +1,4 @@
-# Generating and Viewing Allure Reports (Windows & macOS)
+# Generating and Viewing Allure Reports (Windows, macOS & Linux)
 
 ## Overview
 
@@ -8,8 +8,14 @@ This document explains how to:
 2. Generate Allure test results.
 3. Create an Allure HTML report.
 4. Start a local web server to view the report.
+5. View a captured Playwright trace.
 
 Opening `index.html` directly using `file://` is **not recommended** because Allure loads report data dynamically and modern browsers may block those requests.
+
+For what gets *recorded* into a test run (annotations, `@Step` reporting,
+failure attachments, network logs), see [Allure Reporting](allure-reporting.md).
+This document only covers installing the tooling and generating/viewing the
+report from results that already exist.
 
 ---
 
@@ -131,6 +137,51 @@ Expected output:
 
 ---
 
+## Linux
+
+Allure Commandline does not have a native `apt`/`yum` package, so install it
+manually from the GitHub release, the same way as the Windows manual method:
+
+1. Download the latest release archive:
+
+https://github.com/allure-framework/allure2/releases
+
+2. Download the `.tgz` archive (for example):
+
+```
+allure-2.44.0.tgz
+```
+
+3. Extract it to a permanent location:
+
+```bash
+sudo tar -xzf allure-2.44.0.tgz -C /opt/
+sudo mv /opt/allure-2.44.0 /opt/allure
+```
+
+4. Add the **bin** directory to your `PATH`. Add this line to `~/.bashrc`,
+   `~/.zshrc`, or the shell profile used by your environment (including
+   inside a Codespaces/devcontainer image):
+
+```bash
+export PATH="$PATH:/opt/allure/bin"
+```
+
+5. Reload the shell profile and verify:
+
+```bash
+source ~/.bashrc   # or ~/.zshrc
+allure --version
+```
+
+Expected output:
+
+```
+2.44.0
+```
+
+---
+
 # Prerequisites
 
 Ensure the following are installed:
@@ -177,8 +228,8 @@ The `allure-results` directory is created automatically when the test framework 
 
 Example:
 
-```powershell
-mvn test
+```bash
+mvn clean test
 ```
 
 ---
@@ -190,13 +241,13 @@ Execute the test suite.
 Windows:
 
 ```powershell
-mvn test
+mvn clean test
 ```
 
-macOS:
+macOS / Linux:
 
 ```bash
-mvn test
+mvn clean test
 ```
 
 The framework should generate:
@@ -224,7 +275,7 @@ Windows:
 allure generate allure-results -o allure-report --clean
 ```
 
-macOS:
+macOS / Linux:
 
 ```bash
 allure generate allure-results -o allure-report --clean
@@ -257,7 +308,7 @@ Windows:
 cd allure-report
 ```
 
-macOS:
+macOS / Linux:
 
 ```bash
 cd allure-report
@@ -271,7 +322,7 @@ Windows:
 jwebserver
 ```
 
-macOS:
+macOS / Linux:
 
 ```bash
 jwebserver
@@ -302,7 +353,7 @@ The Allure report should load successfully.
 ```powershell
 cd C:\Projects\playwright-junit-java-reference
 
-mvn test
+mvn clean test
 
 allure generate allure-results -o allure-report --clean
 
@@ -319,12 +370,12 @@ http://localhost:8000
 
 ---
 
-# Complete macOS Workflow
+# Complete macOS / Linux Workflow
 
 ```bash
 cd ~/Projects/playwright-junit-java-reference
 
-mvn test
+mvn clean test
 
 allure generate allure-results -o allure-report --clean
 
@@ -351,7 +402,7 @@ Windows:
 allure serve allure-results
 ```
 
-macOS:
+macOS / Linux:
 
 ```bash
 allure serve allure-results
@@ -366,6 +417,48 @@ This command:
 This is useful for local development.
 
 For CI/CD environments, using `allure generate` followed by `jwebserver` more closely mirrors how reports are generated and published.
+
+---
+
+# Generating Reports from Docker-Executed Test Runs
+
+When tests run inside a container (see [Docker Execution](docker-execution.md)),
+`allure-results` is written inside the container's filesystem unless
+a volume is mounted. To view the report afterward using the steps above:
+
+1. Mount the project root as a volume when running the container, so
+   results land on the host:
+
+```bash
+docker run -v "$(pwd):/app" <image-name> mvn clean test
+```
+Command is two-way bind (not a copy), anything the container writes to /app — including allure-results/ 
+and test-results/ from mvn clean test — is actually being written straight to your host project folder in real time. 
+Nothing needs to be copied out afterward.
+
+2. Once the container exits, `allure-results` will exist on the
+   host at the usual path.
+3. Run `allure generate allure-results -o allure-report --clean`
+   and `jwebserver` on the host exactly as in Steps 2–4 above.
+
+If the volume is not mounted, the results only exist inside the (now
+stopped) container and must be copied out with `docker cp` before they can
+be generated into a report.
+
+---
+
+# Viewing Playwright Traces
+
+Playwright traces captured on failure (see [Allure Reporting](allure-reporting.md#playwright-trace-capture))
+can be viewed using the Playwright Trace Viewer.
+
+If Node.js is installed, open a trace using:
+
+```bash
+npx playwright show-trace test-results/traces/<trace-file>.zip
+```
+
+The Trace Viewer provides an interactive timeline of the test execution, allowing inspection of every recorded browser action.
 
 ---
 
@@ -413,7 +506,7 @@ Windows:
 dir allure-results
 ```
 
-macOS:
+macOS / Linux:
 
 ```bash
 ls allure-results
@@ -474,25 +567,25 @@ jwebserver
 
 Run tests:
 
-```powershell
+```bash
 mvn test
 ```
 
 Generate report:
 
-```powershell
+```bash
 allure generate allure-results -o allure-report --clean
 ```
 
 Serve report automatically:
 
-```powershell
+```bash
 allure serve allure-results
 ```
 
 Start the Java web server:
 
-```powershell
+```bash
 cd allure-report
 
 jwebserver
@@ -500,19 +593,18 @@ jwebserver
 
 Verify Allure installation:
 
-```powershell
+```bash
 allure --version
 ```
 
 Verify Java installation:
 
-```powershell
+```bash
 java -version
 ```
 
 Verify Maven installation:
 
-```powershell
+```bash
 mvn -version
 ```
-

@@ -58,20 +58,22 @@ https://www.saucedemo.com/
 
 Detailed framework documentation:
 
-| Document                                                     | Description |
-|--------------------------------------------------------------|---|
-| [IntelliJ Setup](docs/setup-intellij.md)                     | Development environment setup |
-| [Architecture](docs/architecture.md)                         | Framework design and architecture |
-| [Running Tests](docs/running-tests.md)                       | Test execution commands |
-| [Allure Reporting](docs/allure-reporting.md)                 | Installing Allure CLI, generating reports, and viewing test results |
-| [Allure Report Generation](docs/allure_report_generation.md) | Generating reports and viewing Playwright traces |
-| [Dependency Management](docs/dependency-management.md)       | Maven dependencies, version alignment, and troubleshooting |
-| [Browser Lifecycle](docs/browser-lifecycle.md)               | Browser and Playwright lifecycle management |
-| [Parallel Execution](docs/parallel-execution.md)             | Parallel test execution design |
-| [Troubleshooting](docs/troubleshooting.md)                   | Common issues and solutions |
-| [GitHub Actions](docs/github-actions.md) | CI pipeline configuration and automated test execution |
-| [Docker Execution](docs/docker-execution.md)                 | Running tests using Docker containers |
+<!-- AMENDED: allure-reporting.md and allure_report_generation.md descriptions
+     updated to reflect actual, non-overlapping scope of each doc. -->
 
+| Document                                                      | Description |
+|-----------------------------------------------------------------|---|
+| [IntelliJ Setup](docs/setup-intellij.md)                        | Development environment setup |
+| [Architecture](docs/architecture.md)                             | Framework design and architecture |
+| [Running Tests](docs/running-tests.md)                           | Test execution commands |
+| [Allure Reporting](docs/allure-reporting.md)                     | Allure/JUnit 5 integration: annotations, `@Step` reporting, failure attachments (screenshots, traces, console logs), network request logging, and CI/CD reporting flow |
+| [Allure Report Generation](docs/allure_report_generation.md)     | Installing Allure Commandline (Windows/macOS/Linux) and generating, serving, and troubleshooting the HTML report |
+| [Dependency Management](docs/dependency-management.md)          | Maven dependencies, version alignment, and troubleshooting |
+| [Browser Lifecycle](docs/browser-lifecycle.md)                  | Browser and Playwright lifecycle management |
+| [Parallel Execution](docs/parallel-execution.md)                | Parallel test execution design |
+| [Troubleshooting](docs/troubleshooting.md)                      | Common issues and solutions |
+| [GitHub Actions](docs/github-actions.md)                        | CI pipeline configuration and automated test execution |
+| [Docker Execution](docs/docker-execution.md)                    | Running tests using Docker containers |
 
 ---
 
@@ -146,8 +148,6 @@ The framework separates:
 
 The framework includes:
 
-The framework includes:
-
 - Playwright Factory
 - BaseUiObject
 - BasePage
@@ -168,12 +168,16 @@ The framework includes:
 
 ## Test Reports
 
-### Allure Reports
+<!-- AMENDED: previously linked only to allure_report_generation.md, which
+     omits the annotation/@Step/failure-attachment detail that lives in
+     allure-reporting.md. Both are now referenced with distinct purposes. -->
 
-Test execution generates Allure result files.  
-See the guide below for generating and viewing the HTML report:
+Test execution generates Allure result files under `allure-results`.
 
-[Allure Report Generation Guide](docs/allure_report_generation.md)
+- For details on test annotations, `@Step` reporting, and what gets attached to a failed test (screenshots, Playwright traces, console logs, network logs), see [Allure Reporting](docs/allure-reporting.md).
+- For instructions on installing Allure Commandline and generating/viewing the HTML report locally or in CI, see [Allure Report Generation](docs/allure_report_generation.md).
+
+---
 
 ## Future Enhancements
 
