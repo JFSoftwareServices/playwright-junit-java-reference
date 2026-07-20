@@ -1,3 +1,5 @@
+<!-- AMENDED: retitled from "(Windows & macOS)" to reflect added Linux
+     coverage and Docker guidance below. -->
 # Generating and Viewing Allure Reports (Windows, macOS & Linux)
 
 ## Overview
@@ -229,7 +231,7 @@ The `allure-results` directory is created automatically when the test framework 
 Example:
 
 ```bash
-mvn clean test
+mvn test
 ```
 
 ---
@@ -241,13 +243,13 @@ Execute the test suite.
 Windows:
 
 ```powershell
-mvn clean test
+mvn test
 ```
 
 macOS / Linux:
 
 ```bash
-mvn clean test
+mvn test
 ```
 
 The framework should generate:
@@ -353,7 +355,7 @@ The Allure report should load successfully.
 ```powershell
 cd C:\Projects\playwright-junit-java-reference
 
-mvn clean test
+mvn test
 
 allure generate allure-results -o allure-report --clean
 
@@ -375,7 +377,7 @@ http://localhost:8000
 ```bash
 cd ~/Projects/playwright-junit-java-reference
 
-mvn clean test
+mvn test
 
 allure generate allure-results -o allure-report --clean
 
@@ -422,26 +424,23 @@ For CI/CD environments, using `allure generate` followed by `jwebserver` more cl
 
 # Generating Reports from Docker-Executed Test Runs
 
-When tests run inside a container (see [Docker Execution](docker-execution.md)),
-`allure-results` is written inside the container's filesystem unless
-a volume is mounted. To view the report afterward using the steps above:
-
-1. Mount the project root as a volume when running the container, so
-   results land on the host:
+When tests run inside a container, see [Docker Execution](docker-execution.md)
+for the full setup. In summary: `allure-results` is written inside the
+container's filesystem unless a volume is mounted, so the project's Docker
+setup mounts it (alongside `test-results`) explicitly:
 
 ```bash
-docker run -v "$(pwd):/app" <image-name> mvn clean test
+docker run \
+-v ./test-results:/app/test-results \
+-v ./allure-results:/app/allure-results \
+playwright-java-framework
 ```
-Command is two-way bind (not a copy), anything the container writes to /app — including allure-results/ 
-and test-results/ from mvn clean test — is actually being written straight to your host project folder in real time. 
-Nothing needs to be copied out afterward.
 
-2. Once the container exits, `allure-results` will exist on the
-   host at the usual path.
-3. Run `allure generate allure-results -o allure-report --clean`
-   and `jwebserver` on the host exactly as in Steps 2–4 above.
+Once the container exits, `allure-results` will exist on the host at the
+usual path. Run `allure generate allure-results -o allure-report --clean`
+and `jwebserver` on the host exactly as in Steps 2–4 above.
 
-If the volume is not mounted, the results only exist inside the (now
+If the volumes are not mounted, the results only exist inside the (now
 stopped) container and must be copied out with `docker cp` before they can
 be generated into a report.
 

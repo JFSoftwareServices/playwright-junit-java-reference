@@ -70,37 +70,25 @@ The execution flow is:
 
 ```
 Developer / CI Pipeline
-
         |
         v
-
 Docker Container
-
         |
         +----------------+
         |                |
         v                v
-
      Java 21          Maven
-
         |
         v
-
   Playwright Java
-
         |
         v
-
  Browser Engines
-
         |
         v
-
  Test Execution
-
         |
         v
-
  Allure Results
 ```
 
@@ -141,15 +129,12 @@ The Docker environment must remain compatible with the project requirements:
 
 # Building the Docker Image
 
+<!-- AMENDED: removed a duplicate "Example" block that repeated the exact
+     same build command a second time for no reason. -->
+
 From the project root:
 
 ```bash
-docker build -t playwright-java-framework .
-```
-
-Example:
-
-```
 docker build -t playwright-java-framework .
 ```
 
@@ -182,11 +167,14 @@ mvn clean test
 
 By default, files created inside a Docker container are removed when the container stops.
 
-To keep test artefacts, mount the local `test-results` directory:
+To keep test artefacts — including the Allure results needed to generate
+a report afterward (see [Allure Report Generation](../../../Desktop/allure_report_generation.md))
+— mount both the `test-results` and `allure-results` directories:
 
 ```bash
 docker run \
 -v ./test-results:/app/test-results \
+-v ./allure-results:/app/allure-results \
 playwright-java-framework
 ```
 
@@ -194,15 +182,21 @@ Generated artefacts remain available locally:
 
 ```
 test-results/
-
     screenshots/
-
     traces/
-
     videos/
-
     auth/
         storageState.json
+
+allure-results/
+    *.json
+```
+
+Once the container exits, generate and view the report from the host
+exactly as described in [Allure Report Generation](../../../Desktop/allure_report_generation.md):
+
+```bash
+allure generate allure-results -o allure-report --clean
 ```
 
 ---
@@ -232,23 +226,14 @@ Configuration flow:
 
 ```
 Docker Environment Variables
-
             |
-
             v
-
        TestConfig
-
             |
-
             v
-
     PlaywrightFactory
-
             |
-
             v
-
       Browser Launch
 ```
 
@@ -291,20 +276,6 @@ The Docker Compose configuration is defined in:
 docker-compose.yml
 ```
 
-Run the framework using:
-
-```bash
-docker compose up --build
-```
-
-Docker Compose will:
-
-1. Build the Playwright test image
-2. Create the test container
-3. Apply configured environment variables
-4. Mount test result directories
-5. Execute the Maven test suite
-
 Example configuration:
 
 ```yaml
@@ -316,6 +287,7 @@ services:
 
     volumes:
       - ./test-results:/app/test-results
+      - ./allure-results:/app/allure-results
 
     environment:
       BROWSER: chromium
@@ -325,11 +297,7 @@ services:
       mvn clean test
 ```
 
-For a single local execution, `docker run` is sufficient.
-
-For repeatable framework execution, CI pipelines, and future expansion, Docker Compose provides a more maintainable approach.
-
-Run:
+Run the framework using:
 
 ```bash
 docker compose up --build
@@ -337,10 +305,16 @@ docker compose up --build
 
 Docker Compose will:
 
-1. Build the test image
-2. Start the test container
-3. Execute the Maven test suite
-4. Persist test results
+1. Build the Playwright test image
+2. Create the test container
+3. Apply configured environment variables
+4. Mount test result and Allure result directories
+5. Execute the Maven test suite
+6. Persist test results and Allure results on exit
+
+For a single local execution, `docker run` is sufficient.
+
+For repeatable framework execution, CI pipelines, and future expansion, Docker Compose provides a more maintainable approach.
 
 ---
 
@@ -352,35 +326,20 @@ Example pipeline:
 
 ```
 Git Push
-
     |
-
     v
-
 CI Pipeline
-
     |
-
     v
-
 Build Docker Image
-
     |
-
     v
-
 Run Automated Tests
-
     |
-
     v
-
 Generate Allure Results
-
     |
-
     v
-
 Publish Test Report
 ```
 
