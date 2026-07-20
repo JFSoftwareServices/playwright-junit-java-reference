@@ -13,6 +13,14 @@ import java.nio.file.Path;
  *
  * Creates a reusable storage state after login and provides
  * authenticated browser contexts for test execution.
+ *
+ * Thread safety: {@link #authenticatedContext(Browser)} is called
+ * concurrently by parallel test threads. A double-checked lock around
+ * {@link #createAuthState(Browser)} ensures that only one thread performs
+ * the initial login and writes storageState.json, even when several
+ * threads reach the "does it exist?" check at the same time on a cold
+ * start (i.e. before the file has ever been created). Once the file
+ * exists, subsequent reads require no locking.
  */
 public final class AuthStateManager {
 
@@ -22,6 +30,13 @@ public final class AuthStateManager {
                     "auth",
                     "storageState.json"
             );
+
+    /**
+     * Guards creation of {@link #AUTH_STATE}. Only ever held briefly,
+     * around the check-then-create sequence below - not around any
+     * Playwright browser/context usage beyond that.
+     */
+    private static final Object AUTH_STATE_LOCK = new Object();
 
     private AuthStateManager() {
     }
@@ -50,7 +65,15 @@ public final class AuthStateManager {
 
     public static BrowserContext authenticatedContext(Browser browser) {
         if (!authStateExists()) {
-            createAuthState(browser);
+            synchronized (AUTH_STATE_LOCK) {
+                // Re-check inside the lock: another thread may have
+                // created the file while this thread was waiting to
+                // acquire it. Without this second check, every thread
+                // that queued up would redundantly log in again.
+                if (!authStateExists()) {
+                    createAuthState(browser);
+                }
+            }
         }
         return browser.newContext(
                 new Browser.NewContextOptions()
