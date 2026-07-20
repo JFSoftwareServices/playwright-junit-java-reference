@@ -12,7 +12,6 @@ Allure enhances test reporting by providing:
 - Severity classification
 - Test history
 - Failure analysis
-- Automatic videos
 - Automatic screenshot capture on failure
 - Automatic Playwright trace capture on failure
 - Automatic browser console log capture on failure
@@ -162,18 +161,8 @@ Current failure attachments include:
 - Playwright screenshots
 - Playwright traces
 - Browser console logs
-- Videos
 
 These attachments are automatically added to the failed test in the Allure report for easier failure investigation.
-
-<!-- ADDED: clarifies that video recording itself is not failure-only,
-     even though video only appears as a report attachment on failure —
-     this distinction wasn't previously stated anywhere in the doc. -->
-> **Note:** Videos are the one exception to "capture on failure" — video
-> recording runs for every test regardless of outcome (see
-> [Video Capture](#video-capture) below). Only the failure-attachment
-> *inclusion in the report* is failure-only, same as the other attachments
-> in this list.
 
 ---
 
@@ -221,39 +210,9 @@ Playwright traces contain:
 
 These traces provide detailed insight into how the browser reached the failure state.
 
+
 To open a captured trace interactively, see **Viewing Playwright Traces**
 in [Allure Report Generation](allure_report_generation.md).
-
----
-
-## Video Capture
-
-<!-- ADDED: new subsection, matching the structure of Screenshot Capture and
-     Playwright Trace Capture above. Documents the recording-vs-attachment
-     distinction requested: videos record for every test, pass or fail, but
-     are only attached to the Allure report for failed tests. -->
-
-Unlike screenshots and traces, video recording is **not** conditional on
-test outcome. The framework records a video for every test that runs,
-regardless of whether it passes or fails.
-
-Videos are:
-
-- saved locally under:
-
-```
-test-results/
-    videos/
-```
-
-- attached to the Allure report **only for failed tests**.
-
-Videos for passing tests are still written to `test-results/videos/` on
-disk, but are not attached to the Allure report — they are not needed to
-diagnose a pass, and attaching video for every test would add unnecessary
-size and noise to the report. If a passing test's video needs to be
-reviewed, it can still be found in `test-results/videos/` directly, outside
-of Allure.
 
 ---
 
@@ -353,8 +312,6 @@ Failed Test
     +-- Browser Console Logs
     |
     +-- Network Logs
-    |
-    +-- Videos
 ```
 
 Network capture is especially useful for:
@@ -374,12 +331,12 @@ Execute the test suite:
 mvn clean test
 ```
 
-After execution, Allure results are generated:
+After execution, Allure results are generated at the project root:
 
 ```
 allure-results/
-  |
-  +-- *.json
+ |
+ +-- *.json
 ```
 
 To install Allure Commandline and generate or view the HTML report from
@@ -387,20 +344,46 @@ these results, see [Allure Report Generation](allure_report_generation.md).
 
 ---
 
+For JUnit Platform / Allure version alignment issues (including the
+`OutputDirectoryProvider not available` test-discovery error and how it
+was resolved), see [Dependency Management](dependency-management.md).
+
 # CI/CD Integration
 
+In CI/CD pipelines:
+
+```
+Build Pipeline
+      |
+      v
+mvn test
+      |
+      v
+allure-results
+      |
+      v
+CI Allure Plugin
+      |
+      v
+Published HTML Report
+```
+
+The pipeline does not require:
+
+```bash
+allure serve
+```
+
+The CI server generates and publishes the report automatically.
+
 For the concrete GitHub Actions workflow steps used by this project
-(including how results are uploaded and where the report is stored),
+(including how results are uploaded and where the report is published),
 see [GitHub Actions](github-actions.md).
 
 For running the suite — and generating results — inside a container, see
-[Docker Execution](docker-execution.md).
-
-Result files use the same `allure-results` path described in this document. However,
-that directory exists inside the container's filesystem by default. To generate a report
-afterward, mount `allure-results/` as a
-volume so it's accessible on the host once
-the container exits — otherwise it will
-need to be copied out manually before running `allure generate`.
+[Docker Execution](docker-execution.md); result-file locations follow the
+same `allure-results` path shown above, but the report must be
+generated from a location where the `allure-results/` directory is
+accessible (e.g. a mounted volume) once the container exits.
 
 ---

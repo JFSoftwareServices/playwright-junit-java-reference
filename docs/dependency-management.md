@@ -1,3 +1,5 @@
+# Dependency Management
+
 ## JUnit Platform and Allure Version Alignment
 
 This framework uses:
@@ -18,12 +20,14 @@ JUnit Jupiter
     |
     +-- junit-jupiter-engine
               |
-              +-- junit-platform-engine
-
-
-JUnit Platform Launcher
+              v
+       junit-platform-engine
+              ^
               |
-              +-- Test discovery and execution
+    junit-platform-launcher
+              |
+              v
+    Test discovery and execution
 ```
 
 The JUnit Platform components must use compatible versions.
