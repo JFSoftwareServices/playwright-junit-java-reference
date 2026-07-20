@@ -58,9 +58,6 @@ https://www.saucedemo.com/
 
 Detailed framework documentation:
 
-<!-- AMENDED: allure-reporting.md and allure_report_generation.md descriptions
-     updated to reflect actual, non-overlapping scope of each doc. -->
-
 | Document                                                      | Description |
 |-----------------------------------------------------------------|---|
 | [IntelliJ Setup](docs/setup-intellij.md)                        | Development environment setup |
@@ -105,32 +102,16 @@ Test execution instructions:
 
 ## Framework Architecture
 
-The framework follows a Component-Based Page Object Model (CBPOM).
-
-High-level structure:
-
-```
-Test Layer
-    |
-    v
-Page Objects
-    |
-    v
-Reusable Components
-    |
-    v
-Framework Layer
-    |
-    v
-Playwright Browser API
-    |
-    v
-Browser
-```
+The framework follows a Component-Based Page Object Model (CBPOM), separating
+test logic, page behaviour, reusable UI components, and browser management
+into distinct layers.
 
 Pages represent application screens.
 
 Components represent reusable UI sections shared across multiple pages.
+
+For the full architecture diagram — including authentication state
+management and browser context handling — see [Architecture](docs/architecture.md).
 
 The framework separates:
 
@@ -168,11 +149,7 @@ The framework includes:
 
 ## Test Reports
 
-<!-- AMENDED: previously linked only to allure_report_generation.md, which
-     omits the annotation/@Step/failure-attachment detail that lives in
-     allure-reporting.md. Both are now referenced with distinct purposes. -->
-
-Test execution generates Allure result files under `allure-results`.
+Test execution generates Allure result files under `allure-results` (project root).
 
 - For details on test annotations, `@Step` reporting, and what gets attached to a failed test (screenshots, Playwright traces, console logs, network logs), see [Allure Reporting](docs/allure-reporting.md).
 - For instructions on installing Allure Commandline and generating/viewing the HTML report locally or in CI, see [Allure Report Generation](docs/allure_report_generation.md).

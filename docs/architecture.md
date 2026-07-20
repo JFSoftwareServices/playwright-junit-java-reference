@@ -31,9 +31,9 @@ PlaywrightFactory     AuthStateManager
 
 ---
 
-# Authentication State Management
+## Authentication State Management
 
-## Overview
+### Overview
 
 The framework supports authenticated test execution using Playwright's storage state feature.
 
@@ -43,7 +43,7 @@ This significantly reduces execution time for tests that require an authenticate
 
 ---
 
-## How It Works
+### How It Works
 
 The first authenticated test performs the normal login flow using a temporary browser page.
 
@@ -86,9 +86,14 @@ Create authenticated BrowserContext
 Execute test
 ```
 
+This diagram shows the logic from a single test's perspective. Under
+parallel execution, the check-then-create step above is guarded by locking
+to prevent concurrent threads from logging in simultaneously on a cold
+start — see [Parallel Execution](#parallel-execution) below.
+
 ---
 
-## Framework Components
+### Framework Components
 
 Authentication state is managed by:
 
@@ -102,10 +107,11 @@ Responsibilities include:
 - saving authenticated browser state
 - creating authenticated browser contexts
 - reusing saved authentication state
+- guarding first-time state creation against concurrent parallel threads
 
 ---
 
-## Authenticated Tests
+### Authenticated Tests
 
 Tests that require a logged-in user should extend:
 
@@ -147,7 +153,7 @@ This ensures the complete authentication flow is exercised independently of the 
 
 ---
 
-## Benefits
+### Benefits
 
 Using Playwright authentication state provides several advantages:
 
@@ -160,20 +166,30 @@ Using Playwright authentication state provides several advantages:
 
 ---
 
----
-
-## Parallel Execution
+### Parallel Execution
 
 The authentication mechanism is designed to work with the framework's parallel execution model.
 
 Each test thread creates its own:
 
+- `Playwright` instance
+- `Browser`
 - `BrowserContext`
 - `Page`
 
 using the shared authentication state.
 
 ```
+   Thread 1        Thread 2        Thread 3
+      |                |                |
+      v                v                v
+  Playwright       Playwright       Playwright
+      |                |                |
+      v                v                v
+   Browser          Browser          Browser
+      |                |                |
+      +----------------+----------------+
+                       |
                 storageState.json
                        |
         +--------------+--------------+
@@ -187,24 +203,31 @@ using the shared authentication state.
 
 The authentication state file is created only when it does not already exist.
 
-Once generated, it is treated as read-only and can be safely reused by multiple concurrent tests.
+On a cold start — when no `storageState.json` exists yet — multiple test
+threads may reach `AuthStateManager.authenticatedContext()` at close to the
+same time. To prevent more than one thread from logging in and writing the
+file concurrently, `AuthStateManager` uses double-checked locking: a thread
+only acquires a lock and creates the state if the file is still missing
+after entering the lock, so a thread that was waiting behind another one
+sees the file already exists and skips creation entirely.
+
+Once the file exists, no locking is needed — `authStateExists()` is a plain
+file-existence check, and the file itself is read-only from that point on
+and can be safely reused by any number of concurrent tests.
 
 This approach provides:
 
-- thread-safe authenticated execution
+- thread-safe authenticated state creation, including on a cold start
 - isolated browser contexts for every test
 - support for parallel execution without repeated logins
 - improved execution performance for large test suites
 
-## Authentication State File
+---
 
-The generated authentication state is stored at:
+### Authentication State File
 
-```
-test-results/
-    auth/
-        storageState.json
-```
+The generated authentication state is stored at the path shown in
+[How It Works](#how-it-works) above.
 
 The file contains Playwright browser state, including cookies and local storage used to restore an authenticated browser session.
 
@@ -214,7 +237,7 @@ The file is generated automatically and should not be committed to source contro
 
 ---
 
-## When to Use
+### When to Use
 
 Use authentication state for tests that require an already authenticated user, such as:
 
