@@ -7,6 +7,7 @@ The framework manages Playwright browser resources through
 
 Each test execution receives isolated Playwright resources:
 
+```
 Test Thread
 |
 +-- Playwright
@@ -16,6 +17,7 @@ Test Thread
 +-- BrowserContext
 |
 +-- Page
+```
 
 ## Why ThreadLocal?
 
@@ -51,3 +53,4 @@ Example:
 
 ```bash
 mvn test -Dbrowser=firefox -Dheadless=false
+```

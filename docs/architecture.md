@@ -31,11 +31,15 @@ PlaywrightFactory     AuthStateManager
 
 Page Objects in this framework extend `BasePage`, and reusable UI sections
 extend `BaseComponent` — both built on a common `BaseUiObject`. See
-[Base UI Object](../../../Desktop/base-ui-object.md) for that hierarchy.
+[Base UI Object](base-ui-object.md) for that hierarchy.
 
 ---
 
 ## Authentication State Management
+
+<!-- AMENDED: nested under Framework Architecture as a second-level section
+     (was a second top-level H1), since this is a sub-topic of the overall
+     architecture rather than a separate document topic. -->
 
 ### Overview
 
@@ -58,6 +62,11 @@ test-results/
     auth/
         storageState.json
 ```
+
+<!-- AMENDED: removed duplicate restatement of this same path later in the
+     doc under "Authentication State File" — see that section for what the
+     file contains and its handling; this is the one canonical location
+     where the path itself is stated. -->
 
 The saved state contains the browser session information required to restore an authenticated user.
 
@@ -89,6 +98,12 @@ Create authenticated BrowserContext
         v
 Execute test
 ```
+
+<!-- ADDED: this diagram shows the logic from a single test's perspective.
+     Under parallel execution, the "Authentication state exists?" check and
+     the login/save-state steps that follow it are not a single atomic
+     step for concurrent threads - see Parallel Execution below for how
+     that's actually guarded. -->
 
 This diagram shows the logic from a single test's perspective. Under
 parallel execution, the check-then-create step above is guarded by locking
@@ -184,6 +199,10 @@ Each test thread creates its own:
 - `BrowserContext`
 - `Page`
 
+For why these are ThreadLocal-isolated and how BrowserContext isolation
+works in general (independent of authentication state), see
+[Browser Lifecycle](browser-lifecycle.md).
+
 using the shared authentication state.
 
 ```
@@ -209,6 +228,15 @@ using the shared authentication state.
 ```
 
 The authentication state file is created only when it does not already exist.
+
+<!-- AMENDED: previous wording asserted this was safe without describing a
+     mechanism. AuthStateManager did not originally have any synchronization
+     around the create-if-missing check, which meant concurrent threads on
+     a cold start (no storageState.json yet) could all pass the "does it
+     exist?" check before any of them finished writing it, each triggering
+     a redundant login. Fixed by adding double-checked locking in
+     AuthStateManager.authenticatedContext(); this section now describes
+     that mechanism rather than asserting safety in the abstract. -->
 
 On a cold start — when no `storageState.json` exists yet — multiple test
 threads may reach `AuthStateManager.authenticatedContext()` at close to the
