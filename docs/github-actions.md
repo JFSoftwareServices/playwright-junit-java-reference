@@ -32,40 +32,26 @@ The workflow is located at:
 
 ```
 Git Push / Pull Request
-
         |
         v
-
 GitHub Actions Runner
-
         |
         v
-
 Checkout Repository
-
         |
         v
-
 Setup Java 21
-
         |
         v
-
 Restore Maven Dependencies
-
         |
         v
-
 Install Playwright Browsers
-
         |
         v
-
 Execute Automated Tests
-
         |
         v
-
 Upload Test Artefacts
 ```
 
@@ -165,24 +151,33 @@ Regardless of test success or failure, the pipeline uploads:
 
 ```
 test-results/
-
     screenshots/
-
     traces/
-
     videos/
-
     auth/
 
-```
-
-and:
-
-```
-target/allure-results/
+allure-results/
 ```
 
 These artefacts allow investigation of failed CI executions.
+
+> **Note:** This pipeline uploads the raw `test-results/` and
+> `allure-results/` artefacts only. It does not currently run
+> `allure generate` or publish an HTML report anywhere (e.g. GitHub
+> Pages). To view a report from a CI run, download the `allure-results`
+> artefact and generate it locally — see
+> [Allure Report Generation](allure_report_generation.md). Publishing the
+> report automatically as part of the pipeline is listed under
+> [Future CI/CD Expansion](#future-cicd-expansion) below.
+
+> **Security note:** The uploaded `test-results/auth/` directory
+> includes `storageState.json`, which contains browser session
+> cookies capable of restoring an authenticated session (see
+> [Architecture](architecture.md#authentication-state-file)). Anyone
+> with access to this CI artifact can potentially reuse that session.
+> Restrict artifact access accordingly, or exclude `auth/` from the
+> uploaded artefact if this exposure isn't acceptable for your
+> environment.
 
 ---
 
@@ -197,3 +192,4 @@ Future enhancements can include:
 - manual approval gates
 - deployment pipelines
 - cloud browser execution
+- automatic Allure report generation and publishing (e.g. to GitHub Pages)
