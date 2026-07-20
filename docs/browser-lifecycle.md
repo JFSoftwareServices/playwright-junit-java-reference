@@ -5,29 +5,10 @@
 The framework manages Playwright browser resources through
 `PlaywrightFactory`.
 
-Each test execution receives isolated Playwright resources:
-
-```
-Test Thread
-|
-+-- Playwright
-|
-+-- Browser
-|
-+-- BrowserContext
-|
-+-- Page
-```
-
-## Why ThreadLocal?
-
-JUnit 5 can execute tests concurrently.
-
-Playwright Java objects should not be shared unsafely between test threads.
-The framework therefore stores browser resources in `ThreadLocal`
-containers.
-
-This provides each executing test thread with its own isolated resources.
+Each test execution receives its own isolated `Playwright`, `Browser`,
+`BrowserContext`, and `Page`, managed via `ThreadLocal`. For the full
+explanation of why, and how thread isolation works across the framework,
+see [Parallel Execution](../../../Desktop/files/parallel-execution.md).
 
 ## Browser Context Isolation
 

@@ -180,18 +180,8 @@ Using Playwright authentication state provides several advantages:
 
 The authentication mechanism is designed to work with the framework's parallel execution model.
 
-Each test thread creates its own:
-
-- `Playwright` instance
-- `Browser`
-- `BrowserContext`
-- `Page`
-
-For why these are ThreadLocal-isolated and how BrowserContext isolation
-works in general (independent of authentication state), see
-[Browser Lifecycle](browser-lifecycle.md).
-
-using the shared authentication state.
+Each test thread creates its own `Playwright` instance, `Browser`,
+`BrowserContext`, and `Page` using the shared authentication state:
 
 ```
    Thread 1        Thread 2        Thread 3
@@ -214,6 +204,10 @@ using the shared authentication state.
         v              v              v
       Page           Page           Page
 ```
+
+For the full explanation of why these are ThreadLocal-isolated, and how
+BrowserContext isolation works in general (independent of authentication
+state), see [Parallel Execution](parallel-execution.md).
 
 The authentication state file is created only when it does not already exist.
 

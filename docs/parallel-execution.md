@@ -1,4 +1,3 @@
-
 # Parallel Execution
 
 ## Overview
@@ -117,13 +116,19 @@ Page
 
 Each test execution has its own isolated browser session.
 
-This prevents tests from sharing:
+This prevents tests from sharing **live** session data during execution,
+such as:
 
-- Cookies
+- Cookies mutated during a test
 - Local storage
-- Session data
-- Authentication state
+- In-session data
 - Browser pages
+
+This is distinct from the *shared authentication state seed*
+(`storageState.json`), which is intentionally created once and reused by
+every thread's `BrowserContext` — see
+[Architecture: Authentication State Management](architecture.md#authentication-state-management)
+for how that sharing is made thread-safe.
 
 ---
 
@@ -279,6 +284,17 @@ Customer customer =
         customerFactory.create();
 ```
 
+<!-- AMENDED: added caveat so this doesn't read as contradicting
+     AuthStateManager's own static shared state (AUTH_STATE, AUTH_STATE_LOCK). -->
+
+> **Note:** This doesn't rule out shared static state entirely —
+> `AuthStateManager`'s `storageState.json` is deliberately shared static
+> state, created once and reused by design. The anti-pattern being warned
+> against here is *unguarded, per-test mutable* shared state (like a
+> `static Customer` a test writes to), not shared state in general. Shared
+> state that's read-only after a single, lock-guarded creation — as with
+> `AuthStateManager` — is the safe exception, not the rule being broken.
+
 ---
 
 ## Use Isolated Test Data
@@ -309,26 +325,27 @@ Do not share:
 
 Parallel execution allows CI pipelines to complete faster.
 
+<!-- AMENDED: fixed a broken arrow flow — an extra blank line between the
+     two branches and "Test Results" made the diagram's final arrow read
+     as disconnected from the branches above it. -->
+
 Example:
 
 ```text
 CI Pipeline
-
-      |
       |
       +----------------+
       |                |
       v                v
-
  Test Thread 1     Test Thread 2
-
+      |                |
+      v                v
  Browser Context   Browser Context
-
-
-      |
-      v
-
- Test Results
+      |                |
+      +--------+-------+
+               |
+               v
+        Test Results
 ```
 
 This approach provides faster feedback while maintaining reliable test execution.
@@ -343,8 +360,10 @@ Check that tests are not using:
 
 - static mutable variables
 - shared browser objects
-- shared authentication state
 - shared test data
+- live session data leaking between BrowserContexts (not the same as the
+  intentionally shared `storageState.json` seed — see Thread Isolation
+  above)
 
 ---
 
