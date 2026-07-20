@@ -62,6 +62,7 @@ Detailed framework documentation:
 |-----------------------------------------------------------------|---|
 | [IntelliJ Setup](docs/setup-intellij.md)                        | Development environment setup |
 | [Architecture](docs/architecture.md)                             | Framework design and architecture |
+| [Base UI Object](docs/base-ui-object.md)                         | BaseUiObject/BasePage/BaseComponent hierarchy underlying the framework's page objects |
 | [Running Tests](docs/running-tests.md)                           | Test execution commands |
 | [Allure Reporting](docs/allure-reporting.md)                     | Allure/JUnit 5 integration: annotations, `@Step` reporting, failure attachments (screenshots, traces, console logs), network request logging, and CI/CD reporting flow |
 | [Allure Report Generation](docs/allure_report_generation.md)     | Installing Allure Commandline (Windows/macOS/Linux) and generating, serving, and troubleshooting the HTML report |

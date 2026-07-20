@@ -29,6 +29,10 @@ PlaywrightFactory     AuthStateManager
           Browser Engine
 ```
 
+Page Objects in this framework extend `BasePage`, and reusable UI sections
+extend `BaseComponent` — both built on a common `BaseUiObject`. See
+[Base UI Object](../../../Desktop/base-ui-object.md) for that hierarchy.
+
 ---
 
 ## Authentication State Management
@@ -165,6 +169,9 @@ Using Playwright authentication state provides several advantages:
 - reduced application load during large test suites
 
 ---
+
+<!-- AMENDED: removed a duplicate horizontal rule that appeared here
+     (two "---" in a row rendered as a stray empty divider). -->
 
 ### Parallel Execution
 

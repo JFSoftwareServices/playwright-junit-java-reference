@@ -6,9 +6,9 @@ The framework separates browser pages from reusable UI components by introducing
 
 ```
                  BaseUiObject
-                       │
-          ┌────────────┴────────────┐
-          │                         │
+                       |
+          +------------+------------+
+          |                         |
       BasePage               BaseComponent
 ```
 
