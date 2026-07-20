@@ -31,9 +31,10 @@ PlaywrightFactory     AuthStateManager
 
 Page Objects in this framework extend `BasePage`, and reusable UI sections
 extend `BaseComponent` — both built on a common `BaseUiObject`. See
-[Base UI Object](base-ui-object.md) for that hierarchy, and
-[Fluent Page Object Model](fluent-page-object-model.md) for how page
-objects are chained together in tests.
+[Base UI Object](base-ui-object.md) for that hierarchy,
+[Page Components](page-components.md) for how components are composed
+into page objects, and [Fluent Page Object Model](fluent-page-object-model.md)
+for how page objects are chained together in tests.
 
 ---
 
