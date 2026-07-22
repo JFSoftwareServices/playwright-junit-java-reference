@@ -1,6 +1,6 @@
 package com.jfsoftwareservices.tests;
 
-import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
+import com.jfsoftwareservices.framework.manager.PlaywrightManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,7 +11,7 @@ class ParallelExecutionTest extends BaseTest {
     @Test
     void shouldRunParallelTestOne() throws InterruptedException {
 
-        PlaywrightFactory.page()
+        PlaywrightManager.page()
                 .navigate("https://www.saucedemo.com/");
 
 
@@ -25,7 +25,7 @@ class ParallelExecutionTest extends BaseTest {
 
 
         assertNotNull(
-                PlaywrightFactory.page()
+                PlaywrightManager.page()
         );
     }
 
@@ -35,7 +35,7 @@ class ParallelExecutionTest extends BaseTest {
     void shouldRunParallelTestTwo() throws InterruptedException {
 
 
-        PlaywrightFactory.page()
+        PlaywrightManager.page()
                 .navigate("https://www.saucedemo.com/");
 
 
@@ -49,7 +49,7 @@ class ParallelExecutionTest extends BaseTest {
 
 
         assertNotNull(
-                PlaywrightFactory.page()
+                PlaywrightManager.page()
         );
     }
 

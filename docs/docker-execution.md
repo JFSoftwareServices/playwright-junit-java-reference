@@ -231,7 +231,7 @@ Docker Environment Variables
        TestConfig
             |
             v
-    PlaywrightFactory
+    PlaywrightManager
             |
             v
       Browser Launch

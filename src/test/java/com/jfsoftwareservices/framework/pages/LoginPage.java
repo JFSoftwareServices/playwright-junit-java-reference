@@ -1,7 +1,7 @@
 package com.jfsoftwareservices.framework.pages;
 
 import com.jfsoftwareservices.framework.config.TestConfig;
-import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
+import com.jfsoftwareservices.framework.manager.PlaywrightManager;
 import com.jfsoftwareservices.framework.model.Credentials;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -26,7 +26,7 @@ public class LoginPage extends BasePage {
     }
 
     public LoginPage() {
-        super(PlaywrightFactory.page());
+        super(PlaywrightManager.page());
     }
 
     @Step("Navigate to application login page")

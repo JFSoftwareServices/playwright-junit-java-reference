@@ -1,6 +1,6 @@
 package com.jfsoftwareservices.framework.pages;
 
-import com.jfsoftwareservices.framework.factory.PlaywrightFactory;
+import com.jfsoftwareservices.framework.manager.PlaywrightManager;
 import com.jfsoftwareservices.framework.ui.BaseUiObject;
 import com.microsoft.playwright.Page;
 
@@ -12,7 +12,7 @@ public abstract class BasePage extends BaseUiObject {
     protected final Page page;
 
     protected BasePage() {
-        this(PlaywrightFactory.page());
+        this(PlaywrightManager.page());
     }
 
     protected BasePage(Page page) {

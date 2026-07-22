@@ -1,4 +1,4 @@
-package com.jfsoftwareservices.framework.factory;
+package com.jfsoftwareservices.framework.manager;
 
 import com.jfsoftwareservices.framework.auth.AuthStateManager;
 import com.jfsoftwareservices.framework.config.TestConfig;
@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PlaywrightFactory {
+public final class PlaywrightManager {
 
     private static final ThreadLocal<Playwright> PLAYWRIGHT =
             new ThreadLocal<>();
@@ -28,7 +28,7 @@ public final class PlaywrightFactory {
     private static final ThreadLocal<List<String>> NETWORK_LOGS =
             ThreadLocal.withInitial(ArrayList::new);
 
-    private PlaywrightFactory() {
+    private PlaywrightManager() {
     }
 
     public static void  initialise(boolean useAuthenticationState) {

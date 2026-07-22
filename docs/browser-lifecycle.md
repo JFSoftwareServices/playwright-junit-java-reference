@@ -3,7 +3,7 @@
 ## Overview
 
 The framework manages Playwright browser resources through
-`PlaywrightFactory`.
+`PlaywrightManager`.
 
 Each test execution receives its own isolated `Playwright`, `Browser`,
 `BrowserContext`, and `Page`, managed via `ThreadLocal`. For the full

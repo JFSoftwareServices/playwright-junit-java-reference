@@ -18,7 +18,7 @@ Playwright Framework
       |                      |
       |                      |
       v                      v
-PlaywrightFactory     AuthStateManager
+PlaywrightManager     AuthStateManager
       |                      |
       +----------+-----------+
                  |
