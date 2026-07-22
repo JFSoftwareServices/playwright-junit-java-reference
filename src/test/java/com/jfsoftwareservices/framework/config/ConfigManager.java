@@ -4,6 +4,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Central configuration manager for the automation framework.
+ *
+ * <p>
+ * Loads environment-specific configuration from:
+ * {@code config/application-{env}.properties}
+ *
+ * <p>
+ * The environment is selected using the Maven system property:
+ *
+ * <pre>
+ * mvn test -Denv=qa
+ * </pre>
+ *
+ * <p>
+ * Configuration values can be overridden at runtime using JVM system properties:
+ *
+ * <pre>
+ * mvn test -Dbrowser=chrome -Dheadless=true
+ * </pre>
+ *
+ * <p>
+ * Configuration priority:
+ * <ol>
+ *     <li>JVM system properties</li>
+ *     <li>Environment properties file</li>
+ * </ol>
+ *
+ * <p>
+ * This class is a utility class and cannot be instantiated.
+ */
 public final class ConfigManager {
 
     private static final Properties properties = new Properties();
