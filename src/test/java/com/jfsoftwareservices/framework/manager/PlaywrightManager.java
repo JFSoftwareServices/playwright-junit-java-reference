@@ -1,5 +1,6 @@
 package com.jfsoftwareservices.framework.manager;
 
+import com.jfsoftwareservices.factory.BrowserFactory;
 import com.jfsoftwareservices.framework.auth.AuthStateManager;
 import com.jfsoftwareservices.framework.config.TestConfig;
 import com.microsoft.playwright.*;
@@ -8,6 +9,42 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages the lifecycle of Playwright test execution resources.
+ *
+ * <p>
+ * This class provides thread-safe management of Playwright components using
+ * {@link ThreadLocal}, allowing tests to execute in parallel without sharing
+ * browser instances, contexts, or pages.
+ * </p>
+ *
+ * <p>
+ * The manager is responsible for:
+ * </p>
+ *
+ * <ul>
+ *     <li>Creating and closing Playwright instances</li>
+ *     <li>Launching browser instances via {@link BrowserFactory}</li>
+ *     <li>Creating browser contexts and pages</li>
+ *     <li>Applying authentication state when required</li>
+ *     <li>Configuring tracing, video recording, and timeouts</li>
+ *     <li>Capturing browser console messages and network activity</li>
+ *     <li>Cleaning up resources after test execution</li>
+ * </ul>
+ *
+ * <p>
+ * Browser configuration is controlled through {@code TestConfig} and can be
+ * overridden using Maven system properties:
+ * </p>
+ *
+ * <pre>
+ * mvn test -Dbrowser=chromium -Dheadless=true
+ * </pre>
+ *
+ * <p>
+ * This is a utility class and cannot be instantiated.
+ * </p>
+ */
 public final class PlaywrightManager {
 
     private static final ThreadLocal<Playwright> PLAYWRIGHT =
@@ -40,7 +77,7 @@ public final class PlaywrightManager {
         playwright.selectors().setTestIdAttribute("data-test");
         PLAYWRIGHT.set(playwright);
 
-        Browser browser = launchBrowser(playwright);
+        Browser browser = BrowserFactory.create(playwright);
         BROWSER.set(browser);
 
         BrowserContext context;
@@ -108,24 +145,6 @@ public final class PlaywrightManager {
         page.setDefaultTimeout(TestConfig.elementTimeout());
         page.setDefaultNavigationTimeout(TestConfig.navigationTimeout());
         PAGE.set(page);
-    }
-
-    private static Browser launchBrowser(Playwright playwright) {
-        BrowserType browserType = switch (
-                TestConfig.browser().toLowerCase()
-                ) {
-            case "chromium" -> playwright.chromium();
-            case "firefox" -> playwright.firefox();
-            case "webkit" -> playwright.webkit();
-            default -> throw new IllegalArgumentException(
-                    "Unsupported browser: " + TestConfig.browser()
-            );
-        };
-
-        return browserType.launch(
-                new BrowserType.LaunchOptions()
-                        .setHeadless(TestConfig.headless())
-        );
     }
 
     public static Page page() {
